@@ -1,0 +1,27 @@
+const Card = require("./src/models/Card");
+const Deck = require("./src/models/Deck");
+const Player = require("./src/models/Player");
+
+const Game = require("./src/core/Game");
+const ConsoleUI = require("./src/ui/ConsoleUI");
+
+async function main() {
+  const deck = new Deck();
+  const ui = new ConsoleUI();
+
+  const players = [
+    new Player("Player 1", deck),
+    new Player("Player 2", deck),
+  ];
+
+  const game = new Game(players, deck, ui);
+
+  while (deck.count > 0) {
+    await game.takeTurn();
+  }
+
+  ui.notify("Deck empty. Game over!");
+  ui.close();
+}
+
+main();
