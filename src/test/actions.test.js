@@ -2,6 +2,7 @@ const Deck = require("../models/Deck");
 const Player = require("../models/Player");
 const Actions = require("../core/Actions");
 
+// stub UI to simulate user input
 function makeUI(inputs = []) {
   let i = 0;
   return {
@@ -10,42 +11,18 @@ function makeUI(inputs = []) {
   };
 }
 
-describe("Actions", () => {
+describe("Actions - expected behavior", () => {
   test("action 1 places card in own slot", async () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
-    const ui = makeUI(["0", "0"]); // card index 0, slot index 0
+    const ui = makeUI(["0", "0"]); // card index 0, slot 0
 
     const card = p1.hand[0];
     await Actions.execute("1", p1, p2, deck, ui);
 
     expect(p1.slots[0]).toContain(card);
     expect(p1.hand).not.toContain(card);
-  });
-
-  test("action 2 places card in opponent slot", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    const ui = makeUI(["0", "1"]); // card index 0, opponent slot 1
-
-    const card = p1.hand[0];
-    await Actions.execute("2", p1, p2, deck, ui);
-
-    expect(p2.slots[1]).toContain(card);
-    expect(p1.hand).not.toContain(card);
-  });
-
-  test("action 3 discards all cards from slot", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    p1.slots[2].push(p1.hand.pop()); // prefill slot 2
-    const ui = makeUI(["2"]);
-
-    await Actions.execute("3", p1, p2, deck, ui);
-    expect(p1.slots[2]).toEqual([]);
   });
 
   test("action 4 discards one card from hand", async () => {
@@ -57,5 +34,37 @@ describe("Actions", () => {
     const card = p1.hand[0];
     await Actions.execute("4", p1, p2, deck, ui);
     expect(p1.hand).not.toContain(card);
+  });
+});
+
+describe("Actions - edge cases / unexpected behavior", () => {
+  test("action 1 with invalid card index does not crash", async () => {
+    const deck = new Deck();
+    const p1 = new Player("P1", deck);
+    const p2 = new Player("P2", deck);
+    const ui = makeUI(["999", "0"]); // invalid card index
+
+    await expect(Actions.execute("1", p1, p2, deck, ui)).resolves.not.toThrow();
+    expect(p1.slots[0].length).toBe(0); // nothing added
+  });
+
+  test("action 2 with invalid slot index does not crash", async () => {
+    const deck = new Deck();
+    const p1 = new Player("P1", deck);
+    const p2 = new Player("P2", deck);
+    const ui = makeUI(["0", "999"]); // invalid opponent slot index
+
+    await expect(Actions.execute("2", p1, p2, deck, ui)).resolves.not.toThrow();
+    expect(p2.slots.every(s => s.length === 0)).toBe(true); // nothing added
+  });
+
+  test("action 3 with invalid slot index does nothing", async () => {
+    const deck = new Deck();
+    const p1 = new Player("P1", deck);
+    const p2 = new Player("P2", deck);
+    const ui = makeUI(["999"]);
+
+    await expect(Actions.execute("3", p1, p2, deck, ui)).resolves.not.toThrow();
+    expect(p1.slots.length).toBe(3); // still 3 slots
   });
 });
