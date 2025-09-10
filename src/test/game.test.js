@@ -10,14 +10,23 @@ class FakeUI {
     this.index = 0;
     this.logs = [];
   }
-  ask() {
-    return Promise.resolve(this.inputs[this.index++] || "1");
+
+  async ask(_prompt) {
+    return this.inputs[this.index++] || "1"; // default to "1" if inputs exhausted
   }
-  askAction() {
-    return this.ask();
+
+  async askAction(player) {
+    return this.ask(`Action for ${player.name}: `);
   }
-  printState() {}
-  notify(msg) { this.logs.push(msg); }
+
+  printState(players, deck) {
+    // do nothing in test
+  }
+
+  notify(msg) {
+    this.logs.push(msg);
+  }
+
   close() {}
 }
 
@@ -27,8 +36,12 @@ describe("Game - normal and edge behavior", () => {
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
 
-    // inputs: P1 places first card in own slot, P2 tries invalid card index
-    const ui = new FakeUI(["0", "0", "999", "0"]);
+    // Inputs: action choice, card index, slot index, repeat for next player
+    const ui = new FakeUI([
+      "1", "0", "0", // P1: action 1, card 0 -> slot 0
+      "1", "0", "999", // P2: action 1, card 0 -> slot invalid
+    ]);
+
     const game = new Game([p1, p2], deck, ui);
 
     await game.takeTurn(); // P1
