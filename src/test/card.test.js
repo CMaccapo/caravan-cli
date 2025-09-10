@@ -1,4 +1,4 @@
-const Card = require("../src/models/Card");
+const Card = require("../models/Card");
 
 describe("Card", () => {
   test("toString returns value + suit", () => {

@@ -1,6 +1,6 @@
-const Deck = require("../src/models/Deck");
-const Player = require("../src/models/Player");
-const Actions = require("../src/core/Actions");
+const Deck = require("../models/Deck");
+const Player = require("../models/Player");
+const Actions = require("../core/Actions");
 
 function makeUI(inputs = []) {
   let i = 0;

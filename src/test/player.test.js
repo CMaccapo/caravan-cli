@@ -1,5 +1,5 @@
-const Deck = require("../src/models/Deck");
-const Player = require("../src/models/Player");
+const Deck = require("../models/Deck");
+const Player = require("../models/Player");
 
 describe("Player", () => {
   test("player starts with 7 cards in hand", () => {
