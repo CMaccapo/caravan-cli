@@ -2,10 +2,10 @@ const Deck = require("../models/Deck");
 const Player = require("../models/Player");
 
 describe("Player - expected behavior", () => {
-  test("player starts with 7 cards in hand", () => {
+  test("player starts with 8 cards in hand", () => {
     const deck = new Deck();
     const p = new Player("Tester", deck);
-    expect(p.hand.length).toBe(7);
+    expect(p.hand.length).toBe(8);
   });
 
   test("draw adds a card to hand", () => {
