@@ -41,52 +41,56 @@ class FakeUI {
   close() {}
 }
 
-describe("Game- Normal 8-turn", () => {
-  const deck = new Deck();
-  const p1 = new Player("P1", deck);
-  const p2 = new Player("P2", deck);
-  const players = [p1, p2];
-  const ui = new FakeUI([
-      "0", "0", //P1
-      "0", "0", //P2
+describe("Game - Normal 8-turn", () => {
+  let deck, p1, p2, players, ui, game;
+
+  beforeAll(() => {
+    deck = new Deck();
+    p1 = new Player("P1", deck);
+    p2 = new Player("P2", deck);
+    players = [p1, p2];
+
+    ui = new FakeUI([
+      "0", "0", // P1
+      "0", "0", // P2
       "1", "1", 
       "1", "1",
       "2", "2", 
       "2", "2",
-      //place in own field
-      "1", "0", "0", 
-      "1", "4", "2"
-      //place in opponent field
     ]);
 
-    const game = new Game([p1, p2], deck, ui);
+    game = new Game(players, deck, ui);
+  });
 
   test("Pregame", async () => {
     expect(game.phase).toBe("pregame");
+
     for (let turn = 0; turn < 6; turn++) {
       await game.takeTurn();
     }
 
-    // Check P1 caravan 0 has a card
     players.forEach(player => {
       player.caravans.slice(0, 3).forEach(caravan => {
         expect(caravan.size()).toBe(1);
       });
     });
-
   });
-  test("Main Phase", async () => {
+
+  test("Main Phase begins", () => {
     expect(game.phase).toBe("main");
-    //check each player has 5 cards in main phase
-    players.forEach((player, pi) => {
-      expect(p1.hand.length).toBe(5);
+    players.forEach(player => {
+      expect(player.hand.length).toBe(5);
     });
   });
+
   test("Action - P1 place 0 on own 0", async () => {
+    ui.pushInputs(["1", "0", "0"]); // add inputs just before this step
     await game.takeTurn();
     expect(p1.caravans[0].size()).toBe(2);
   });
+
   test("Action - P2 place 4 on own 2", async () => {
+    ui.pushInputs(["1", "4", "2"]);
     await game.takeTurn();
     expect(p2.caravans[2].size()).toBe(2);
   });
