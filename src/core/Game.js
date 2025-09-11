@@ -31,17 +31,34 @@ class Game {
   }
 
   async pregameTurn(player) {
-    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat).`);
-    const cIdx = parseInt(await this.ui.ask("Choose card index from hand: "), 10);
-    const sIdx = parseInt(await this.ui.ask("Choose slot index (0-2): "), 10);
+    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat in an empty slot).`);
 
-    if (player.hand[cIdx] && player.slots[sIdx]) {
+    while (true) {
+      const cIdx = parseInt(await this.ui.ask("Choose card index from hand: "), 10);
+      const sIdx = parseInt(await this.ui.ask("Choose slot index (0-2): "), 10);
+
+      if (!player.hand[cIdx]) {
+        this.ui.notify("Invalid card index. Try again.");
+        continue;
+      }
+
+      if (!player.slots[sIdx]) {
+        this.ui.notify("Invalid slot index. Try again.");
+        continue;
+      }
+
+      if (player.slots[sIdx].length > 0) {
+        this.ui.notify("Slot is not empty. Choose an empty slot.");
+        continue;
+      }
+
+      // Valid input: place the card and break the loop
       player.slots[sIdx].push(player.hand[cIdx]);
       player.hand.splice(cIdx, 1);
-    } else {
-      this.ui.notify("Invalid input. Skipping turn.");
+      break;
     }
   }
+
 }
 
 module.exports = Game;
