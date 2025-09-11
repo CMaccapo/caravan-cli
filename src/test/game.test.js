@@ -94,7 +94,8 @@ describe("Game - Normal 8-turn", () => {
     await game.takeTurn();
     expect(p2.caravans[2].size()).toBe(2);
   });
-
+});
+describe("Game - Basic", () => {
   test("turn switches correctly", async () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
