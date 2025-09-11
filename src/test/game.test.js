@@ -113,6 +113,18 @@ describe("Game - Normal 8-turn", () => {
     await game.takeTurn();
     expect(p2.caravans[2].size()).toBe(0);
   });
+  test("4Action - P1 discards #0", async () => {
+    ui.pushInputs(["4", "0"]);
+    const initialCard = p1.hand[0];
+    await game.takeTurn();
+    expect(p1.hand[0]).not.toBe(initialCard);
+  });
+  test("4Action - P2 discards #4", async () => {
+    ui.pushInputs(["4", "4"]);
+    const initialCard = p2.hand[4];
+    await game.takeTurn();
+    expect(p1.hand[4]).not.toBe(initialCard);
+  });
 });
 describe("Game - Basic", () => {
   test("turn switches correctly", async () => {
