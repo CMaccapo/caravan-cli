@@ -15,7 +15,7 @@ const Placement = {
 
   discardCaravan(player, caravanIndex) {
     if (!player.caravans[caravanIndex]) return false;
-    player.caravans[caravanIndex] = [];
+    player.caravans[caravanIndex].clear;
     return true;
   },
 
