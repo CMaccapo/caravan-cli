@@ -28,37 +28,15 @@ class ConsoleUI {
     players.forEach((p) => {
       console.log(`\n${p.name}`);
       console.log("Hand:", p.handToString());
-      console.log("Caravans:");
-      this.printCaravansGrid(p.caravans);
+      console.log(`${p.name}'s caravans:`);
+      p.caravans.forEach((caravan, index) => {
+        console.log(`  Caravan ${index}: [${caravan.cards.join(", ")}]`);
+      });
     });
     console.log(`\nDeck: ${deck.count} cards left`);
     console.log("==================\n");
   }
 
-  // Render caravans as a 3-column grid
-  printCaravansGrid(caravans) {
-    const caravanLabels = ["[0]", "[1]", "[2]"];
-
-    // First line: caravan headers
-    console.log(caravanLabels.map((lbl) => lbl.padEnd(15)).join(""));
-
-    // Get the maximum caravan height (so we can print row by row)
-    const maxHeight = Math.max(...caravans.map((s) => s.length));
-
-    for (let row = 0; row < maxHeight; row++) {
-      let rowStr = "";
-      for (let col = 0; col < 3; col++) {
-        let card = caravans[col][row] ? caravans[col][row].toString() : "";
-        rowStr += card.padEnd(15);
-      }
-      console.log(rowStr);
-    }
-
-    // If all caravans are empty, still show placeholders
-    if (maxHeight === 0) {
-      console.log(" ".padEnd(15) + " ".padEnd(15) + " ".padEnd(15));
-    }
-  }
 
   notify(message) {
     console.log(message);
