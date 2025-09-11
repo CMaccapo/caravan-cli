@@ -31,27 +31,43 @@ class FakeUI {
 }
 
 describe("Game - normal and edge behavior", () => {
-  test("game plays two turns without crashing", async () => {
+  test("pregame", async () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
 
-    // Inputs: action choice, card index, caravan index, repeat for next player
     const ui = new FakeUI([
-      "1", "0", "0", // P1: action 1, card 0 -> caravan 0
-      "1", "0", "999", // P2: action 1, card 0 -> caravan invalid
+      "0", "0", //P1
+      "0", "0", //P2
+      "1", "1", 
+      "1", "1",
+      "2", "2", 
+      "2", "2",
     ]);
 
     const game = new Game([p1, p2], deck, ui);
 
-    await game.takeTurn(); // P1
-    await game.takeTurn(); // P2
+    await game.takeTurn();
+    await game.takeTurn();
+    await game.takeTurn();
+    await game.takeTurn();
+    await game.takeTurn();
+    await game.takeTurn();
+
+    const players = [p1, p2];
 
     // Check P1 caravan 0 has a card
-    expect(p1.caravans[0].length).toBe(1);
+    players.forEach(player => {
+      player.caravans.slice(0, 3).forEach(caravan => {
+        expect(caravan.size()).toBe(1);
+      });
+    });
 
     // P2's hand should remain same size (invalid input)
-    expect(p2.hand.length).toBe(7);
+    players.forEach((player, pi) => {
+      expect(p1.hand.length).toBe(5);
+    });
+
   });
 
   test("turn switches correctly", async () => {
