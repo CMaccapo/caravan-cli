@@ -2,7 +2,7 @@ class Player {
   constructor(name, deck) {
     this.name = name;
     this.hand = [];
-    this.slots = [[], [], []]; // 3 slots
+    this.caravans = [[], [], []]; // 3 caravans
     for (let i = 0; i < 8; i++) {
       this.draw(deck);
     }
@@ -18,8 +18,8 @@ class Player {
     return this.hand.map((c, i) => `[${i}]${c}`).join(" ");
   }
 
-  slotsToString() {
-    return this.slots.map((s, i) => `[${i}](${s.join(" ")})`).join(" ");
+  caravansToString() {
+    return this.caravans.map((s, i) => `[${i}](${s.join(" ")})`).join(" ");
   }
 }
 

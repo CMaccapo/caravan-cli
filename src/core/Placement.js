@@ -1,21 +1,21 @@
 const Placement = {
-  placeOnOwn(player, cardIndex, slotIndex) {
-    if (!player.hand[cardIndex] || !player.slots[slotIndex]) return false;
-    player.slots[slotIndex].push(player.hand[cardIndex]);
+  placeOnOwn(player, cardIndex, caravanIndex) {
+    if (!player.hand[cardIndex] || !player.caravans[caravanIndex]) return false;
+    player.caravans[caravanIndex].push(player.hand[cardIndex]);
     player.hand.splice(cardIndex, 1);
     return true;
   },
 
-  placeOnOpponent(actor, cardIndex, opponent, slotIndex) {
-    if (!actor.hand[cardIndex] || !opponent.slots[slotIndex]) return false;
-    opponent.slots[slotIndex].push(actor.hand[cardIndex]);
+  placeOnOpponent(actor, cardIndex, opponent, caravanIndex) {
+    if (!actor.hand[cardIndex] || !opponent.caravans[caravanIndex]) return false;
+    opponent.caravans[caravanIndex].push(actor.hand[cardIndex]);
     actor.hand.splice(cardIndex, 1);
     return true;
   },
 
-  discardSlot(player, slotIndex) {
-    if (!player.slots[slotIndex]) return false;
-    player.slots[slotIndex] = [];
+  discardCaravan(player, caravanIndex) {
+    if (!player.caravans[caravanIndex]) return false;
+    player.caravans[caravanIndex] = [];
     return true;
   },
 
