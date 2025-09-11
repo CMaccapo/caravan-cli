@@ -5,10 +5,21 @@ const Actions = require("../core/Actions");
 
 // fake UI with pre-programmed inputs
 class FakeUI {
-  constructor(inputs) {
+  constructor(inputs = []) {
     this.inputs = inputs;
     this.index = 0;
     this.logs = [];
+  }
+
+  pushInputs(newInputs) {
+    this.inputs.push(...newInputs);
+  }
+
+  async getInput() {
+    if (this.index >= this.inputs.length) {
+      throw new Error("No more inputs!");
+    }
+    return this.inputs[this.index++];
   }
 
   async ask(_prompt) {
