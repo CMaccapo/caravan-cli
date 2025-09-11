@@ -58,7 +58,7 @@ class Game {
       return false;
     }
 
-    if (player.caravans[sIdx].length > 0) {
+    if (!player.caravans[sIdx].isEmpty()) {
       this.ui.notify("caravan is not empty. Choose an empty caravan.");
       return false;
     }
