@@ -16,9 +16,9 @@ class ConsoleUI {
 
   async askAction(player) {
     console.log(`${player.name}'s turn.`);
-    console.log("1) Place card in your slot");
-    console.log("2) Place card in opponent's slot");
-    console.log("3) Discard all cards from your slot");
+    console.log("1) Place card in your field");
+    console.log("2) Place card in opponent's field");
+    console.log("3) Clear a caravan");
     console.log("4) Discard one card from hand");
     return await this.ask("Choose action: ");
   }
@@ -28,33 +28,33 @@ class ConsoleUI {
     players.forEach((p) => {
       console.log(`\n${p.name}`);
       console.log("Hand:", p.handToString());
-      console.log("Slots:");
-      this.printSlotsGrid(p.slots);
+      console.log("Caravans:");
+      this.printCaravansGrid(p.caravans);
     });
     console.log(`\nDeck: ${deck.count} cards left`);
     console.log("==================\n");
   }
 
-  // Render slots as a 3-column grid
-  printSlotsGrid(slots) {
-    const slotLabels = ["[0]", "[1]", "[2]"];
+  // Render caravans as a 3-column grid
+  printCaravansGrid(caravans) {
+    const caravanLabels = ["[0]", "[1]", "[2]"];
 
-    // First line: slot headers
-    console.log(slotLabels.map((lbl) => lbl.padEnd(15)).join(""));
+    // First line: caravan headers
+    console.log(caravanLabels.map((lbl) => lbl.padEnd(15)).join(""));
 
-    // Get the maximum slot height (so we can print row by row)
-    const maxHeight = Math.max(...slots.map((s) => s.length));
+    // Get the maximum caravan height (so we can print row by row)
+    const maxHeight = Math.max(...caravans.map((s) => s.length));
 
     for (let row = 0; row < maxHeight; row++) {
       let rowStr = "";
       for (let col = 0; col < 3; col++) {
-        let card = slots[col][row] ? slots[col][row].toString() : "";
+        let card = caravans[col][row] ? caravans[col][row].toString() : "";
         rowStr += card.padEnd(15);
       }
       console.log(rowStr);
     }
 
-    // If all slots are empty, still show placeholders
+    // If all caravans are empty, still show placeholders
     if (maxHeight === 0) {
       console.log(" ".padEnd(15) + " ".padEnd(15) + " ".padEnd(15));
     }
