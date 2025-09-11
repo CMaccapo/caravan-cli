@@ -13,7 +13,7 @@ const Placement = {
     return true;
   },
 
-  discardSlot(player, slotIndex) {
+  discardCaravan(player, slotIndex) {
     if (!player.slots[slotIndex]) return false;
     player.slots[slotIndex] = [];
     return true;
