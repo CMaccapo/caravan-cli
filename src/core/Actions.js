@@ -1,3 +1,5 @@
+const Placement = require("./Placement");
+
 const Actions = {
   async execute(choice, player, opponent, deck, ui) {
     switch (choice) {
