@@ -1,8 +1,10 @@
+const Caravan = require("./Caravan");
+
 class Player {
-  constructor(name, deck) {
+  constructor(name, deck, caravanCount=3) {
     this.name = name;
     this.hand = [];
-    this.caravans = [[], [], []]; // 3 caravans
+    this.caravans = Array.from({ length: caravanCount }, () => new Caravan());
     for (let i = 0; i < 8; i++) {
       this.draw(deck);
     }

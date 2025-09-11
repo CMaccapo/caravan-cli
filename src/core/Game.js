@@ -64,7 +64,7 @@ class Game {
     }
 
     // Valid placement
-    player.caravans[sIdx].push(player.hand[cIdx]);
+    player.caravans[sIdx].addCard(player.hand[cIdx]);
     player.hand.splice(cIdx, 1);
     return true;
   }
