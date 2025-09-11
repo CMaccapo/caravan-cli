@@ -1,45 +1,36 @@
 const Placement = require("./Placement");
+const Hand = require("./Hand");
 
 const Actions = {
   async execute(choice, player, opponent, deck, ui) {
     switch (choice) {
-      case "1": { // own slot
+      case "1": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const sIdx = parseInt(await ui.ask("Choose slot index (0-2): "), 10);
-        if (player.hand[cIdx] && player.slots[sIdx]) {
-          player.slots[sIdx].push(player.hand[cIdx]);
-          player.hand.splice(cIdx, 1);
-        }
+        if (!Placement.placeOnOwn(player, cIdx, sIdx)) ui.notify("Invalid placement.");
         break;
       }
-      case "2": { // opponent slot
+      case "2": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const sIdx = parseInt(await ui.ask("Choose opponent slot index (0-2): "), 10);
-        if (player.hand[cIdx] && opponent.slots[sIdx]) {
-          opponent.slots[sIdx].push(player.hand[cIdx]);
-          player.hand.splice(cIdx, 1);
-        }
+        if (!Placement.placeOnOpponent(player, cIdx, opponent, sIdx)) ui.notify("Invalid placement.");
         break;
       }
-      case "3": { // discard slot
+      case "3": {
         const sIdx = parseInt(await ui.ask("Choose slot index (0-2): "), 10);
-        if (player.slots[sIdx]) player.slots[sIdx] = [];
+        if (!Placement.discardSlot(player, sIdx)) ui.notify("Invalid slot.");
         break;
       }
-      case "4": { // discard hand card
+      case "4": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
-        if (player.hand[cIdx]) player.hand.splice(cIdx, 1);
+        if (!Placement.discardHandCard(player, cIdx)) ui.notify("Invalid card.");
         break;
       }
       default:
         ui.notify("Invalid choice. Skipping turn.");
     }
 
-    // draw if hand < 5
-    if (player.hand.length < 5 && deck.count > 0) {
-      player.draw(deck);
-      ui.notify(`${player.name} draws a card.`);
-    }
+    Hand.drawIfNeeded(player, deck, 5, ui);
   }
 };
 

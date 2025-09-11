@@ -1,4 +1,3 @@
-// src/core/Hand.js
 const Hand = {
   needsDraw(player, min = 5) {
     return player.hand.length < min;
