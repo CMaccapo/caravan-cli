@@ -3,7 +3,7 @@ class Player {
     this.name = name;
     this.hand = [];
     this.slots = [[], [], []]; // 3 slots
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       this.draw(deck);
     }
   }

@@ -1,6 +1,8 @@
 const Deck = require("../models/Deck");
 const Player = require("../models/Player");
 const Actions = require("../core/Actions");
+const Placement = require("../core/Placement");
+const Hand = require("../core/Hand");
 
 // stub UI to simulate user input
 function makeUI(inputs = []) {
