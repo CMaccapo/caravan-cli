@@ -1,3 +1,5 @@
+const Actions = require("./Actions");
+
 class Game {
   constructor(players, deck, ui) {
     this.players = players;
