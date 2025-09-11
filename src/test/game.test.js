@@ -83,16 +83,35 @@ describe("Game - Normal 8-turn", () => {
     });
   });
 
-  test("Action - P1 place 0 on own 0", async () => {
+  test("1Action - P1 place 0 on own 0", async () => {
     ui.pushInputs(["1", "0", "0"]); // add inputs just before this step
     await game.takeTurn();
     expect(p1.caravans[0].size()).toBe(2);
   });
-
-  test("Action - P2 place 4 on own 2", async () => {
+  test("1Action - P2 place 4 on own 2", async () => {
     ui.pushInputs(["1", "4", "2"]);
     await game.takeTurn();
     expect(p2.caravans[2].size()).toBe(2);
+  });
+  test("2Action - P1 place 0 on other 0", async () => {
+    ui.pushInputs(["2", "0", "0"]);
+    await game.takeTurn();
+    expect(p2.caravans[0].size()).toBe(2);
+  });
+  test("2Action - P2 place 4 on other 2", async () => {
+    ui.pushInputs(["2", "4", "2"]);
+    await game.takeTurn();
+    expect(p1.caravans[2].size()).toBe(2);
+  });
+  test("3Action - P1 clears own 0", async () => {
+    ui.pushInputs(["3", "0"]);
+    await game.takeTurn();
+    expect(p1.caravans[0].size()).toBe(0);
+  });
+  test("3Action - P2 clears own 2", async () => {
+    ui.pushInputs(["3", "2"]);
+    await game.takeTurn();
+    expect(p2.caravans[2].size()).toBe(0);
   });
 });
 describe("Game - Basic", () => {
