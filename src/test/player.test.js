@@ -16,10 +16,10 @@ describe("Player - expected behavior", () => {
     expect(p.hand.length).toBe(before + 1);
   });
 
-  test("slots start empty", () => {
+  test("caravans start empty", () => {
     const deck = new Deck();
     const p = new Player("Tester", deck);
-    expect(p.slots).toEqual([[], [], []]);
+    expect(p.caravans).toEqual([[], [], []]);
   });
 });
 

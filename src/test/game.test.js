@@ -36,10 +36,10 @@ describe("Game - normal and edge behavior", () => {
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
 
-    // Inputs: action choice, card index, slot index, repeat for next player
+    // Inputs: action choice, card index, caravan index, repeat for next player
     const ui = new FakeUI([
-      "1", "0", "0", // P1: action 1, card 0 -> slot 0
-      "1", "0", "999", // P2: action 1, card 0 -> slot invalid
+      "1", "0", "0", // P1: action 1, card 0 -> caravan 0
+      "1", "0", "999", // P2: action 1, card 0 -> caravan invalid
     ]);
 
     const game = new Game([p1, p2], deck, ui);
@@ -47,8 +47,8 @@ describe("Game - normal and edge behavior", () => {
     await game.takeTurn(); // P1
     await game.takeTurn(); // P2
 
-    // Check P1 slot 0 has a card
-    expect(p1.slots[0].length).toBe(1);
+    // Check P1 caravan 0 has a card
+    expect(p1.caravans[0].length).toBe(1);
 
     // P2's hand should remain same size (invalid input)
     expect(p2.hand.length).toBe(7);

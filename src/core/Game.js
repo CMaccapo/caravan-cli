@@ -43,28 +43,28 @@ class Game {
   }
 
   async pregameAction(player) {
-    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat in an empty slot).`);
+    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat in an empty caravan).`);
 
     const cIdx = parseInt(await this.ui.ask("Choose card index from hand: "), 10);
-    const sIdx = parseInt(await this.ui.ask("Choose slot index (0-2): "), 10);
+    const sIdx = parseInt(await this.ui.ask("Choose caravan index (0-2): "), 10);
 
     if (!player.hand[cIdx]) {
       this.ui.notify("Invalid card index. Try again.");
       return false;
     }
 
-    if (!player.slots[sIdx]) {
-      this.ui.notify("Invalid slot index. Try again.");
+    if (!player.caravans[sIdx]) {
+      this.ui.notify("Invalid caravan index. Try again.");
       return false;
     }
 
-    if (player.slots[sIdx].length > 0) {
-      this.ui.notify("Slot is not empty. Choose an empty slot.");
+    if (player.caravans[sIdx].length > 0) {
+      this.ui.notify("caravan is not empty. Choose an empty caravan.");
       return false;
     }
 
     // Valid placement
-    player.slots[sIdx].push(player.hand[cIdx]);
+    player.caravans[sIdx].push(player.hand[cIdx]);
     player.hand.splice(cIdx, 1);
     return true;
   }
