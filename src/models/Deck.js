@@ -4,11 +4,16 @@ class Deck {
   constructor() {
     const suits = ["♠", "♥", "♦", "♣"];
     const values = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+    const types = ["numeric", "special"]
     this.cards = [];
 
     for (let s of suits) {
       for (let v of values) {
-        this.cards.push(new Card(v, s));
+        let t = types[1];
+        if (!isNaN(v) || v == "A") {
+          t = types[0];
+        }
+        this.cards.push(new Card(v, s, t));
       }
     }
     this.shuffle();
