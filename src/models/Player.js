@@ -19,6 +19,16 @@ class Player {
   handToString() {
     return this.hand.map((card, index) => `[${index}]${card}`).join(" ");
   }
+
+  getNumSellingCaravans(){
+    let result = 0;
+    this.caravans.forEach((caravan, ci) => {
+      if(caravan.isSelling()){
+        result = result +1;
+      }
+    });
+    return result;
+  }
 }
 
 module.exports = Player;

@@ -80,10 +80,29 @@ class Game {
         if (caravan.isSelling()) {
           flags[ci] = 1;
         }
+        //need to add selling tie condition
       });
     });
     return flags.every(value => value === 1);
   }
+
+  getWinner() {
+    let max = -1;
+    let result;
+
+    this.players.forEach(player => {
+      const sellingCount = player.getNumSellingCaravans();
+
+      if (sellingCount > max) {
+        max = sellingCount;
+        result = player;
+      }
+    });
+
+    return result;
+  }
+
+
 }
 
 module.exports = Game;
