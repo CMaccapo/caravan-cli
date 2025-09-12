@@ -91,7 +91,7 @@ class Game {
     let result;
 
     this.players.forEach(player => {
-      const sellingCount = player.getNumSellingCaravans();
+      const sellingCount = player.getNumSellableCaravans();
 
       if (sellingCount > max) {
         max = sellingCount;

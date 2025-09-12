@@ -20,10 +20,10 @@ class Player {
     return this.hand.map((card, index) => `[${index}]${card}`).join(" ");
   }
 
-  getNumSellingCaravans(){
+  getNumSellableCaravans(){
     let result = 0;
     this.caravans.forEach((caravan, ci) => {
-      if(caravan.isSelling()){
+      if(caravan.isSellable()){
         result = result +1;
       }
     });
