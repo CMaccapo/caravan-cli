@@ -68,6 +68,16 @@ class Game {
     player.hand.splice(cIdx, 1);
     return true;
   }
+
+  isOver(){
+   this.players.forEach((player, index) => {
+      console.log(`Player ${index + 1}:`, player);
+    });
+    //for both player's caravans
+   //if one caravan in each lane is in the range 21-26
+   //game ends
+   return false;
+  }
 }
 
 module.exports = Game;

@@ -16,7 +16,7 @@ async function main() {
 
   const game = new Game(players, deck, ui);
 
-  while (deck.count > 0) {
+  while (!game.isOver()) {
     await game.takeTurn();
   }
 
