@@ -21,6 +21,17 @@ class Caravan {
   size() {
     return this.cards.length;
   }
+
+  getPoints() {
+    return this.cards.reduce((sum, card) => sum + card.getPoints(), 0);
+  }
+  
+  isSellable() {
+    if (this.getPoints() >= 21 && this.getPoints() <= 26) {
+      return true;
+    }
+    return false;
+  }
 }
 
 module.exports = Caravan;

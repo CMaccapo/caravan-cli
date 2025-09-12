@@ -17,11 +17,17 @@ class Player {
   }
 
   handToString() {
-    return this.hand.map((c, i) => `[${i}]${c}`).join(" ");
+    return this.hand.map((card, index) => `[${index}]${card}`).join(" ");
   }
 
-  caravansToString() {
-    return this.caravans.map((s, i) => `[${i}](${s.join(" ")})`).join(" ");
+  getNumSellableCaravans(){
+    let result = 0;
+    this.caravans.forEach((caravan, ci) => {
+      if(caravan.isSellable()){
+        result = result +1;
+      }
+    });
+    return result;
   }
 }
 

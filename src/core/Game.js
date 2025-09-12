@@ -68,6 +68,75 @@ class Game {
     player.hand.splice(cIdx, 1);
     return true;
   }
+
+  isOver(){
+    if (this.deck.count < 1) {
+      return true;
+    }
+
+    let flags = [0,0,0];
+    this.players.forEach((player, pi) => {
+      player.caravans.forEach((caravan, ci) => {
+        if (caravan.isSellable()) {
+          flags[ci] = 1;
+        }
+      });
+    });
+    return flags.every(value => value === 1);
+  }
+  getWinner() {
+    let winners = [];
+    const player0 = this.players[0];
+    const player1 = this.players[1];
+
+    for (let ci=0; ci<3; ci++){
+      winners.push(this.getCaravanWinner(ci));
+    }
+  
+    const count0 = winners.filter(p => p === player0).length;
+    const count1 = winners.filter(p => p === player1).length;
+
+    if (count0 > count1) {
+      return player0;
+    }
+    if (count1 > count0) {
+      return player1;
+    }
+
+    return null;
+  }
+
+  getCaravanWinner(ci){
+    let result = null;
+    this.players.forEach((player, pi) => {
+      if (this.isInCompetition(ci)){
+        result = this.resolveCompetition(ci);
+      }
+      else if (player.caravans[ci].isSellable()) {
+        result = player;
+      }
+    });
+    return result;
+  }
+  isInCompetition(ci) {
+    return this.players.every(player => player.caravans[ci].isSellable());
+  }
+  resolveCompetition(ci) {
+    const player0 = this.players[0];
+    const player1 = this.players[1];
+    const caravan0 = player0.caravans[ci];
+    const caravan1 = player1.caravans[ci];
+
+    if (caravan0.getPoints() > caravan1.getPoints()){
+      return player0;
+    }
+    else if (caravan1.getPoints() > caravan0.getPoints()){
+      return player1;
+    }
+
+    return null;
+  }
+
 }
 
 module.exports = Game;
