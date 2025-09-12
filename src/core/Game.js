@@ -86,47 +86,55 @@ class Game {
   }
   getWinner() {
     let winners = [];
-    let result;
+    const player0 = this.players[0];
+    const player1 = this.players[1];
 
     for (let ci=0; ci<3; ci++){
       winners.push(this.getCaravanWinner(ci));
     }
+  
+    const count0 = winners.filter(p => p === player0).length;
+    const count1 = winners.filter(p => p === player1).length;
 
-    const count0 = winners.filter(p => p === this.players[0]).length;
-    const count1 = winners.filter(p => p === this.players[1]).length;
-
-    if (count0 > count1) return player[0];
-    if (count1 > count0) return player[1];
-
-    return result;
-  }
-
-  getSellingCaravans(){
-    for (let ci=0; ci<3; ci++){
-      console.log("ASSDDDDDDDDAS"+this.getCaravanWinner(ci));
+    if (count0 > count1) {
+      return player0;
     }
+    if (count1 > count0) {
+      return player1;
+    }
+
+    return null;
   }
+
   getCaravanWinner(ci){
+    let result = null;
     this.players.forEach((player, pi) => {
       if (this.isInCompetition(ci)){
-        console.log("CCCCCCCCCCCCCCcc"+player.name);
-        return this.resolveCompetition(ci);
+        result = this.resolveCompetition(ci);
       }
       else if (player.caravans[ci].isSellable()) {
-        console.log("BBBBBBBBBBBBB"+player.name);
-        return player;
+        result = player;
       }
     });
-    return null;
+    return result;
   }
   isInCompetition(ci) {
     return this.players.every(player => player.caravans[ci].isSellable());
   }
   resolveCompetition(ci) {
-    const caravan0 = player[0].caravan[ci];
-    const caravan1 = player[1].caravan[ci];
+    const player0 = this.players[0];
+    const player1 = this.players[1];
+    const caravan0 = player0.caravans[ci];
+    const caravan1 = player1.caravans[ci];
 
-    return caravan0.getPoints() > caravan1.getPoints() ? player[0] : player[1];
+    if (caravan0.getPoints() > caravan1.getPoints()){
+      return player0;
+    }
+    else if (caravan1.getPoints() > caravan0.getPoints()){
+      return player1;
+    }
+
+    return null;
   }
 
 }

@@ -18,7 +18,6 @@ async function main() {
 
   while (!game.isOver()) {
     await game.takeTurn();
-    game.getSellingCaravans();
   }
   ui.notify("Winner: ${game.getWinner()}");
   ui.notify("Game over!");
