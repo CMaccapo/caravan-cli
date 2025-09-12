@@ -17,11 +17,7 @@ class Player {
   }
 
   handToString() {
-    return this.hand.map((c, i) => `[${i}]${c}`).join(" ");
-  }
-
-  caravansToString() {
-    return this.caravans.map((s, i) => `[${i}](${s.join(" ")})`).join(" ");
+    return this.hand.map((card, index) => `[${index}]${card}`).join(" ");
   }
 }
 
