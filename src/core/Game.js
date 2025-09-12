@@ -70,12 +70,17 @@ class Game {
   }
 
   isOver(){
-   this.players.forEach((player, index) => {
-      console.log(`Player ${index + 1}:`, player);
+    if (this.deck.count < 1) {
+      return true;
+    }
+    this.players.forEach((player, i) => {
+      let flags = [0,0,0];
+      player.caravans.forEach((caravan, j) => {
+        if (caravan.getPoints() >= 21 && caravan.getPoints() <= 26) {
+          ;
+        }
+      });
     });
-    //for both player's caravans
-   //if one caravan in each lane is in the range 21-26
-   //game ends
    return false;
   }
 }

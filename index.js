@@ -20,7 +20,7 @@ async function main() {
     await game.takeTurn();
   }
 
-  ui.notify("Deck empty. Game over!");
+  ui.notify("Game over!");
   ui.close();
 }
 

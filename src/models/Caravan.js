@@ -21,6 +21,10 @@ class Caravan {
   size() {
     return this.cards.length;
   }
+
+  getPoints() {
+    return this.cards.reduce((sum, card) => sum + card.getPoints(), 0);
+  }
 }
 
 module.exports = Caravan;

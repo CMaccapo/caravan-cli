@@ -8,10 +8,10 @@ class Card {
     return `${this.value}${this.suit}`;
   }
   getPoints(){
-    if (card === 'A') {
+    if (this.value === 'A') {
       return 1;
-    } else if (!isNaN(card)) {
-      return parseInt(card, 10);;
+    } else if (!isNaN(this.value)) {
+      return parseInt(this.value, 10);;
     } else {
       return 0;
     }
