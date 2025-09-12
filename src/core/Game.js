@@ -73,15 +73,16 @@ class Game {
     if (this.deck.count < 1) {
       return true;
     }
-    this.players.forEach((player, i) => {
-      let flags = [0,0,0];
-      player.caravans.forEach((caravan, j) => {
+
+    let flags = [0,0,0];
+    this.players.forEach((player, pi) => {
+      player.caravans.forEach((caravan, ci) => {
         if (caravan.getPoints() >= 21 && caravan.getPoints() <= 26) {
-          ;
+          flags[ci] = 1;
         }
       });
     });
-   return false;
+    return flags.every(value => value === 1);
   }
 }
 
