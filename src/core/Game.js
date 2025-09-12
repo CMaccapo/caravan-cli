@@ -77,31 +77,57 @@ class Game {
     let flags = [0,0,0];
     this.players.forEach((player, pi) => {
       player.caravans.forEach((caravan, ci) => {
-        if (caravan.isSelling()) {
+        if (caravan.isSellable()) {
           flags[ci] = 1;
         }
-        //need to add selling tie condition
       });
     });
     return flags.every(value => value === 1);
   }
-
   getWinner() {
-    let max = -1;
+    let winners = [];
     let result;
 
-    this.players.forEach(player => {
-      const sellingCount = player.getNumSellableCaravans();
+    for (let ci=0; ci<3; ci++){
+      winners.push(this.getCaravanWinner(ci));
+    }
 
-      if (sellingCount > max) {
-        max = sellingCount;
-        result = player;
-      }
-    });
+    const count0 = winners.filter(p => p === this.players[0]).length;
+    const count1 = winners.filter(p => p === this.players[1]).length;
+
+    if (count0 > count1) return player[0];
+    if (count1 > count0) return player[1];
 
     return result;
   }
 
+  getSellingCaravans(){
+    for (let ci=0; ci<3; ci++){
+      console.log("ASSDDDDDDDDAS"+this.getCaravanWinner(ci));
+    }
+  }
+  getCaravanWinner(ci){
+    this.players.forEach((player, pi) => {
+      if (this.isInCompetition(ci)){
+        console.log("CCCCCCCCCCCCCCcc"+player.name);
+        return this.resolveCompetition(ci);
+      }
+      else if (player.caravans[ci].isSellable()) {
+        console.log("BBBBBBBBBBBBB"+player.name);
+        return player;
+      }
+    });
+    return null;
+  }
+  isInCompetition(ci) {
+    return this.players.every(player => player.caravans[ci].isSellable());
+  }
+  resolveCompetition(ci) {
+    const caravan0 = player[0].caravan[ci];
+    const caravan1 = player[1].caravan[ci];
+
+    return caravan0.getPoints() > caravan1.getPoints() ? player[0] : player[1];
+  }
 
 }
 
