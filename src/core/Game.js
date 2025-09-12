@@ -77,7 +77,7 @@ class Game {
     let flags = [0,0,0];
     this.players.forEach((player, pi) => {
       player.caravans.forEach((caravan, ci) => {
-        if (caravan.getPoints() >= 21 && caravan.getPoints() <= 26) {
+        if (caravan.isSelling()) {
           flags[ci] = 1;
         }
       });

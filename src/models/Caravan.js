@@ -25,6 +25,13 @@ class Caravan {
   getPoints() {
     return this.cards.reduce((sum, card) => sum + card.getPoints(), 0);
   }
+  
+  isSelling() {
+    if (this.getPoints() >= 21 && this.getPoints() <= 26) {
+      return true;
+    }
+    return false;
+  }
 }
 
 module.exports = Caravan;
