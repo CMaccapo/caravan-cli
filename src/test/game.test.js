@@ -194,8 +194,9 @@ describe("Game - Win States", () => {
     p2.caravans[1].addCard(card26);
     p2.caravans[2].addCard(card26);
 
-    expect(p1.getNumSellableCaravans()).toBe(0);
+    expect(p1.getNumSellableCaravans()).toBe(3);
     expect(p2.getNumSellableCaravans()).toBe(3);
+    expect(game.getCaravanWinner(1)).toBe(p2);
     expect(game.getWinner()).toBe(p2);
 
   });
