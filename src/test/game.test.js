@@ -147,7 +147,7 @@ describe("Game - Card States", () => {
   const card1 = new Card("10", "♥", "numeric");
   const card2 = new Card("6", "♥", "numeric");
   const card3 = new Card("5", "♥", "numeric");
-test("P1 Wins: all selling", () => {
+  test("P1 Wins: 3 P1 selling", () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
@@ -168,6 +168,30 @@ test("P1 Wins: all selling", () => {
 
     expect(p1.getNumSellingCaravans()).toBe(3);
     expect(game.getWinner()).toBe(p1);
+
+  });
+  test("P2 Wins: 2 P2, 1 P1 selling", () => {
+    const deck = new Deck();
+    const p1 = new Player("P1", deck);
+    const p2 = new Player("P2", deck);
+    const ui = new FakeUI([]);
+    const game = new Game([p1, p2], deck, ui);
+    //0:21
+    p2.caravans[0].addCard(card1);
+    p2.caravans[0].addCard(card2);
+    p2.caravans[0].addCard(card3);
+    //1:26
+    p2.caravans[1].addCard(card1);
+    p2.caravans[1].addCard(card1);
+    p2.caravans[1].addCard(card2);
+    //2:25
+    p1.caravans[2].addCard(card1);
+    p1.caravans[2].addCard(card1);
+    p1.caravans[2].addCard(card3);
+
+    expect(p1.getNumSellingCaravans()).toBe(1);
+    expect(p2.getNumSellingCaravans()).toBe(2);
+    expect(game.getWinner()).toBe(p2);
 
   });
 });
