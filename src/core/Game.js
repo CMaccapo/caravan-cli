@@ -29,11 +29,7 @@ class Game {
       if (!success) this.ui.notify("Invalid action. Please try again.");
     }
 
-    // Draw if hand < 5 after a successful action
-    if (player.hand.length < 5 && this.deck.count > 0) {
-      player.draw(this.deck);
-      this.ui.notify(`${player.name} draws a card.`);
-    }
+    this.drawIfNeeded(player);
 
     // Check if pregame is over
     if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) {
@@ -42,6 +38,12 @@ class Game {
     }
 
     this.current = (this.current + 1) % this.players.length;
+  }
+  drawIfNeeded(player){
+    if (player.hand.length < 5 && this.deck.count > 0) {
+      player.draw(this.deck);
+      this.ui.notify(`${player.name} draws a card.`);
+    }
   }
 
   async pregameAction(player) {
