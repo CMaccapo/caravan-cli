@@ -1,5 +1,4 @@
 const Placement = require("./Placement");
-const Hand = require("./Hand");
 
 const Actions = {
   async execute(choice, player, opponent, deck, ui) {
@@ -26,7 +25,6 @@ const Actions = {
         return false; // invalid choice
     }
 
-    Hand.drawIfNeeded(player, deck, 5, ui);
   },
   async pregameExecute(player, opponent, deck, ui) {
     const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
