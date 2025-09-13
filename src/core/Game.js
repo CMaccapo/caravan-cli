@@ -30,14 +30,18 @@ class Game {
     }
 
     this.drawIfNeeded(player);
-
-    // Check if pregame is over
-    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) {
-      this.phase = "main";
-      this.ui.notify("Pregame complete! Switching to main phase.");
+    if (this.pregameIsOver()){
+      this.switchPhase();
     }
 
     this.current = (this.current + 1) % this.players.length;
+  }
+  pregameIsOver(){
+    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) return true;
+  }
+  switchPhase(){
+    this.phase = "main";
+    this.ui.notify("Pregame complete! Switching to main phase.");
   }
   drawIfNeeded(player){
     if (player.hand.length < 5 && this.deck.count > 0) {
