@@ -27,6 +27,11 @@ const Actions = {
     }
 
     Hand.drawIfNeeded(player, deck, 5, ui);
+  },
+  async pregameExecute(player, opponent, deck, ui) {
+    const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
+    const sIdx = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
+    return Placement.pregamePlace(player, cIdx, sIdx); 
   }
 };
 

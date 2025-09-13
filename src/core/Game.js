@@ -1,4 +1,5 @@
 const Actions = require("./Actions");
+const Placement = require("./Placement");
 
 class Game {
   constructor(players, deck, ui) {
@@ -19,12 +20,13 @@ class Game {
 
     while (!success) {
       if (this.phase === "pregame") {
-        success = await this.pregameAction(player);
+        this.ui.notify(`${player.name}'s pregame turn (Place A-9 on each empty caravan).`);
+        success = await Actions.pregameExecute(player, opponent, this.deck, this.ui);
       } else {
         const choice = await this.ui.askAction(player);
         success = await Actions.execute(choice, player, opponent, this.deck, this.ui);
-        if (!success) this.ui.notify("Invalid action. Please try again.");
       }
+      if (!success) this.ui.notify("Invalid action. Please try again.");
     }
 
     // Draw if hand < 5 after a successful action

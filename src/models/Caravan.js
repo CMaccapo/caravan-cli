@@ -5,7 +5,7 @@ class Caravan {
 
   addCard(card) {
     if (!card) return false;
-    if (card.type == "numeric"){
+    if (card.type == "numeric" || 1==1){
       this.addNumericCard(card)
     }
     return true;
