@@ -21,19 +21,29 @@ class FakeUI {
     let answer;
 
     if (prompt.includes("card index") && this.currentPlayer) {
-      const idx = this.currentPlayer.hand.findIndex(c => c.isNumeric && c.isNumeric());
-      answer = idx >= 0 ? idx.toString() : "0";
-      this.lastCardIndex = parseInt(answer, 10); // record selection
-    } else if (prompt.includes("caravan index") || prompt.includes("slot index")) {
-      const idx = this.currentPlayer.caravans.findIndex(c => c.isEmpty());
-      answer = idx >= 0 ? idx.toString() : "0";
-      this.lastCaravanIndex = parseInt(answer, 10); // record selection
-    } else {
+      const defaultCardIndex = "0";
+      const idx = this.nextNumericCardIndex();
+      answer = idx >= 0 ? idx.toString() : defaultCardIndex;
+      this.lastCardIndex = parseInt(answer, 10);
+    } 
+    else if (prompt.includes("caravan index")){
+      const defaultCaravanIndex = "0";
+      const idx = this.nextEmptyCaravanIndex();
+      answer = idx >= 0 ? idx.toString() : defaultCaravanIndex;
+      this.lastCaravanIndex = parseInt(answer, 10);
+    } 
+    else {
       answer = this.inputs[this.index++] || "0";
     }
     //console.log(`${prompt}\n${answer}`);
 
     return answer;
+  }
+  nextNumericCardIndex(){
+    return this.currentPlayer.hand.findIndex(c => c.isNumeric && c.isNumeric());
+  }
+  nextEmptyCaravanIndex(){
+    return this.currentPlayer.caravans.findIndex(c => c.isEmpty());
   }
 
   async askAction(player) {
@@ -55,9 +65,7 @@ describe("Game - Play Sim", () => {
     p2 = new Player("P2", deck);
     players = [p1, p2];
 
-    ui = new FakeUI([
-
-    ]);
+    ui = new FakeUI();
 
     game = new Game(players, deck, ui);
   });
@@ -84,24 +92,24 @@ describe("Game - Play Sim", () => {
   });
 
   test("1Action - Place on My Field", async () => {
-    ui.pushInputs(["1"]);
+    ui.pushInputs("1");
     await game.takeTurn();
     
     expect(ui.currentPlayer.caravans[0].size()).toBe(2);
   });
   test("2Action - Place on Other Field", async () => {
-    ui.pushInputs(["2"]);
+    ui.pushInputs("2");
     await game.takeTurn();
     
     expect(ui.currentOpponent.caravans[0].size()).toBe(3);
   });
   test("3Action - Clear Caravan", async () => {
-    ui.pushInputs(["3"]);
+    ui.pushInputs("3");
     await game.takeTurn();
     expect(ui.currentPlayer.caravans[0].size()).toBe(0);
   });
   test("4Action - Discard 1", async () => {
-    ui.pushInputs(["4"]);
+    ui.pushInputs("4");
     const initialCard = p2.hand[ui.lastCardIndex];
     await game.takeTurn();
     expect(ui.currentPlayer.hand[ui.lastCardIndex]).not.toBe(initialCard);
