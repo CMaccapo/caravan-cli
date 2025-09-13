@@ -14,6 +14,8 @@ class Game {
     const player = this.players[this.current];
     const opponent = this.players[(this.current + 1) % this.players.length];
 
+    this.ui.currentPlayer = player;
+    this.ui.currentOpponent = opponent;
     this.ui.printState(this.players, this.deck);
 
     let success = false;
