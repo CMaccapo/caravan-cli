@@ -1,11 +1,30 @@
 class Caravan {
   constructor() {
     this.cards = [];
+    this.direction = null;
+  }
+
+  setDirection(){
+    if (this.cards.length >= 2){
+      const lastCard = this.cards[this.cards.length-1];
+      const nextLastCard = this.cards[this.cards.length-2];
+
+      if (lastCard.points > nextLastCard.points){
+        this.direction = "asc"; 
+      }
+      else if (lastCard.points < nextLastCard.points){
+        this.direction = "desc"; 
+      }
+    }
+    else{
+      this.direction = null;
+    }
   }
 
   addCard(card) {
     if (!card) return false;
     this.addNumericCard(card)
+    this.setDirection();
     return true;
   }
   addNumericCard(card){
@@ -26,7 +45,11 @@ class Caravan {
   }
 
   getPoints() {
-    return this.cards.reduce((sum, card) => sum + card.getPoints(), 0);
+    let result = null;    
+    for (const card of this.cards) {
+      result += card.points;
+    }
+    return result;
   }
   
   isSellable() {

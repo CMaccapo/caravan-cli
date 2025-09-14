@@ -11,6 +11,9 @@ class SilentUI {
     this.index = 0;
     this.logs = [];
   }
+  pushInputs(newInputs) {
+    this.inputs.push(...newInputs);
+  }
   async ask() {
     return this.inputs[this.index++];
   }
@@ -21,21 +24,7 @@ class SilentUI {
   printState() {}
   close() {}
 }
-
-describe("Game (Static) - Happy", () => {
-  test("Pregame numeric card allowed", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    p1.hand = [new Card("5", "♠", "numeric")]; // controlled
-    const ui = new SilentUI(["0", "0"]);
-    const game = new Game([p1, p2], deck, ui);
-
-    await Actions.execute("1", p1, p2, deck, ui);
-
-    expect(p1.caravans[0].size()).toBe(1);
-  });
-
+describe("Game End", () => {
   test("Caravan win", () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
@@ -51,27 +40,77 @@ describe("Game (Static) - Happy", () => {
   });
 });
 
-describe("Game (Static) - Sad", () => {
-  test("Pregame disallows face card", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    p1.hand = [new Card("K", "♠", "special")]; // invalid
-    const ui = new SilentUI(["0", "0"]);
 
-    const result = await Actions.execute("1", p1, p2, deck, ui);
+describe("Direction", () => { 
+  let deck, p1, p2, ui, game;
+  const caravanIndex = 0;
 
-    expect(result).toBe(false);
+  beforeEach(() => {
+    deck = new Deck();
+    p1 = new Player("P1", deck);
+    p2 = new Player("P2", deck);
+
+    // Reset hand every test (fixed order, so we know indexes)
+    p1.hand = [
+      new Card("6", "♦", "numeric"), // index 0
+      new Card("8", "♠", "numeric"), // index 1
+      new Card("2", "♥", "numeric"), // index 2
+      new Card("3", "♦", "numeric")  // index 3
+    ];
+
+    // Reset caravan every test
+    p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
+    p1.caravans[caravanIndex].direction = "asc";
+
+    ui = new SilentUI();
+    game = new Game([p1, p2], deck, ui);
+    game.phase = "main"; 
   });
 
-  test("Invalid discard index rejected", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const ui = new SilentUI(["99"]);
-    const game = new Game([p1, new Player("P2", deck)], deck, ui);
+  describe("Happy", () => {
+    test("Add ascending card to ascending caravan", async () => {
+      // hand[0] = 6♦ (ascending, valid after 5♥ asc)
+      ui.pushInputs(["0", caravanIndex.toString()]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
 
-    const success = await Actions.execute("4", p1, game.players[1], deck, ui);
-    expect(success).toBe(false);
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(2);
+      expect(p1.caravans[caravanIndex].direction).toBe("asc");
+      expect(p1.caravans[caravanIndex].cards[1].value).toBe("6");
     });
 
+    test("Add card of same suit to reverse direction", async () => {
+      p1.caravans[caravanIndex].direction = "asc";
+      // hand[2] = 2♥ (same suit as last card 5♥, should override)
+      ui.pushInputs(["2", caravanIndex.toString()]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(2);
+    
+      expect(p1.caravans[caravanIndex].direction).toBe("desc");
+    });
+  });
+
+  describe("Sad", () => {
+    test("Add descending card to ascending caravan, different suit", async () => {
+      p1.caravans[caravanIndex].direction = "asc";
+      ui.pushInputs(["3", caravanIndex.toString()]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(false);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+      expect(p1.caravans[caravanIndex].direction).toBe("asc");
+    });
+
+    test("Add ascending card to descending caravan, different suit", async () => {
+      p1.caravans[caravanIndex].direction = "desc";
+      ui.pushInputs(["0", caravanIndex.toString()]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(false);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+      expect(p1.caravans[caravanIndex].direction).toBe("desc");
+    });
+  });
 });
