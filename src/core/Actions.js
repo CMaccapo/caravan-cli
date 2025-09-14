@@ -30,23 +30,6 @@ const Actions = {
         if (!Validator.canDiscardHandCard(player, cIdx));
         return Placement.discardHandCard(player, cIdx);
       }
-      //test actions
-      case "110": { //auto-pick next numeric card 
-        
-        const cIdx = nextNumericCardIndex(player);
-        const sIdx = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
-        
-        if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase="main")) return false;
-        return Placement.placeOnOwn(player, cIdx, sIdx); // returns true/false
-      }
-      case "111": { //auto-pick next numeric card and next empty caravan
-        
-        const cIdx = nextNumericCardIndex(player);
-        const sIdx = nextEmptyCaravanIndex(player);
-        
-        if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase="main")) return false;
-        return Placement.placeOnOwn(player, cIdx, sIdx); // returns true/false
-      }
       default:
         return false; // invalid choice
     }
@@ -62,16 +45,3 @@ const Actions = {
 };
 
 module.exports = Actions;
-
-function nextNumericCardIndex(player){
-  for (let result=0; result < this.player.hand.length; result++){
-    if (this.player.hand[result].type == "numeric") return result;
-  }
-  return false;
-}
-function nextEmptyCaravanIndex(player){
-  for (let result=0; result < this.player.caravans.length; result++){
-    if (this.player.caravans[result].isEmpty()) return result;
-  }
-  return false;
-}
