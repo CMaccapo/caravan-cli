@@ -10,7 +10,7 @@ class Game {
     this.phase = "pregame"; // "pregame" | "main"
   }
 
-  async takeTurn() {
+  async takeTurn(maxAttempts = 10) {
     const player = this.players[this.current];
     const opponent = this.players[(this.current + 1) % this.players.length];
 
@@ -19,25 +19,34 @@ class Game {
     this.ui.printState(this.players, this.deck);
 
     let success = false;
+    let attempts = 0;
 
     while (!success) {
+      attempts++;
+      if (attempts > maxAttempts) {
+        throw new Error(`[Game.takeTurn] exceeded ${maxAttempts} attempts (likely bad UI inputs)`);
+      }
+
       if (this.phase === "pregame") {
-        this.ui.notify(`${player.name}'s pregame turn (Place A-9 on each empty caravan).`);
+        this.ui.notify(`${player.name}'s pregame turn.`);
         success = await Actions.pregameExecute(player, opponent, this.deck, this.ui);
       } else {
         const choice = await this.ui.askAction(player);
         success = await Actions.execute(choice, player, opponent, this.deck, this.ui);
       }
-      if (!success) this.ui.notify("Invalid action. Please try again.");
+
+      if (!success) {
+        this.ui.notify("Invalid action. Please try again.");
+      }
     }
 
     this.drawIfNeeded(player);
-    if (this.pregameIsOver()){
+    if (this.pregameIsOver()) {
       this.switchPhase();
     }
-
     this.current = (this.current + 1) % this.players.length;
   }
+
   pregameIsOver(){
     if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) return true;
   }
