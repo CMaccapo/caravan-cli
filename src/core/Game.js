@@ -1,4 +1,5 @@
 const Actions = require("./Actions");
+const Placement = require("./Placement");
 
 class Game {
   constructor(players, deck, ui) {
@@ -9,64 +10,55 @@ class Game {
     this.phase = "pregame"; // "pregame" | "main"
   }
 
-  async takeTurn() {
+  async takeTurn(maxAttempts = 10) {
     const player = this.players[this.current];
     const opponent = this.players[(this.current + 1) % this.players.length];
 
+    this.ui.currentPlayer = player;
+    this.ui.currentOpponent = opponent;
     this.ui.printState(this.players, this.deck);
 
     let success = false;
+    let attempts = 0;
 
     while (!success) {
+      attempts++;
+      if (attempts > maxAttempts) {
+        throw new Error(`[Game.takeTurn] exceeded ${maxAttempts} attempts (likely bad UI inputs)`);
+      }
+
       if (this.phase === "pregame") {
-        success = await this.pregameAction(player);
+        this.ui.notify(`${player.name}'s pregame turn.`);
+        success = await Actions.execute("1", player, opponent, this.deck, this.ui);
       } else {
         const choice = await this.ui.askAction(player);
         success = await Actions.execute(choice, player, opponent, this.deck, this.ui);
-        if (!success) this.ui.notify("Invalid action. Please try again.");
+      }
+
+      if (!success) {
+        this.ui.notify("Invalid action. Please try again.");
       }
     }
 
-    // Draw if hand < 5 after a successful action
+    this.drawIfNeeded(player);
+    if (this.pregameIsOver()) {
+      this.switchPhase();
+    }
+    this.current = (this.current + 1) % this.players.length;
+  }
+
+  pregameIsOver(){
+    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) return true;
+  }
+  switchPhase(){
+    this.phase = "main";
+    this.ui.notify("Pregame complete! Switching to main phase.");
+  }
+  drawIfNeeded(player){
     if (player.hand.length < 5 && this.deck.count > 0) {
       player.draw(this.deck);
       this.ui.notify(`${player.name} draws a card.`);
     }
-
-    // Check if pregame is over
-    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) {
-      this.phase = "main";
-      this.ui.notify("Pregame complete! Switching to main phase.");
-    }
-
-    this.current = (this.current + 1) % this.players.length;
-  }
-
-  async pregameAction(player) {
-    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat in an empty caravan).`);
-
-    const cIdx = parseInt(await this.ui.ask("Choose card index from hand: "), 10);
-    const sIdx = parseInt(await this.ui.ask("Choose caravan index (0-2): "), 10);
-
-    if (!player.hand[cIdx]) {
-      this.ui.notify("Invalid card index. Try again.");
-      return false;
-    }
-
-    if (!player.caravans[sIdx]) {
-      this.ui.notify("Invalid caravan index. Try again.");
-      return false;
-    }
-
-    if (!player.caravans[sIdx].isEmpty()) {
-      this.ui.notify("caravan is not empty. Choose an empty caravan.");
-      return false;
-    }
-
-    // Valid placement
-    player.caravans[sIdx].addCard(player.hand[cIdx]);
-    player.hand.splice(cIdx, 1);
-    return true;
   }
 
   isOver(){

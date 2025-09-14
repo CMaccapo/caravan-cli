@@ -5,8 +5,11 @@ class Caravan {
 
   addCard(card) {
     if (!card) return false;
-    this.cards.push(card);
+    this.addNumericCard(card)
     return true;
+  }
+  addNumericCard(card){
+    this.cards.push(card);
   }
 
   clear() {

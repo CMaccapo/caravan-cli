@@ -4,45 +4,71 @@ const Player = require("../models/Player");
 const Game = require("../core/Game");
 const Actions = require("../core/Actions");
 
-// fake UI with pre-programmed inputs
 class FakeUI {
   constructor(inputs = []) {
     this.inputs = inputs;
     this.index = 0;
     this.logs = [];
+    this.lastCardIndex = null;
+    this.lastCaravanIndex = null; 
   }
 
   pushInputs(newInputs) {
     this.inputs.push(...newInputs);
   }
 
-  async getInput() {
-    if (this.index >= this.inputs.length) {
-      throw new Error("No more inputs!");
-    }
-    return this.inputs[this.index++];
-  }
+  async ask(prompt) {
+    let answer;
 
-  async ask(_prompt) {
-    return this.inputs[this.index++] || "1"; // default to "1" if inputs exhausted
+    if (prompt.includes("card index") && this.currentPlayer) {
+      const defaultCardIndex = "0";
+      answer = nextNumericCardIndex(this.currentPlayer);
+      this.lastCardIndex = parseInt(answer, 10);
+    } 
+    else if (prompt.includes("caravan index")){
+      const defaultCaravanIndex = "0";
+      if (prompt.includes("caravan index")){
+        if (nextEmptyCaravanIndex(this.currentPlayer)){
+          answer = nextEmptyCaravanIndex(this.currentPlayer);
+        }
+        else {
+          answer = defaultCaravanIndex;
+        }
+      }
+      this.lastCaravanIndex = parseInt(answer, 10);
+    } 
+    else if (this.inputs[this.index] !== undefined){
+      answer = this.inputs[this.index];
+      this.index++;
+    }
+    //console.log(`${prompt}\n${answer}`);
+    return answer;
   }
 
   async askAction(player) {
     return this.ask(`Action for ${player.name}: `);
   }
 
-  printState(players, deck) {
-    // do nothing in test
-  }
-
-  notify(msg) {
-    this.logs.push(msg);
-  }
-
+  printState(players, deck) {}
+  notify(msg) { this.logs.push(msg); }
   close() {}
 }
 
-describe("Game - Normal 8-turn", () => {
+function nextNumericCardIndex(player){
+  for (let result=0; result < player.hand.length; result++){
+    if (player.hand[result].type == "numeric") return result;
+  }
+  return false;
+}
+function nextEmptyCaravanIndex(player){
+  for (let result=0; result < player.caravans.length; result++){
+    if (player.caravans[result].isEmpty()) return result;
+  }
+  return false;
+}
+
+
+describe("Game - Play Sim", () => {
   let deck, p1, p2, players, ui, game;
 
   beforeAll(() => {
@@ -51,14 +77,7 @@ describe("Game - Normal 8-turn", () => {
     p2 = new Player("P2", deck);
     players = [p1, p2];
 
-    ui = new FakeUI([
-      "0", "0", // P1
-      "0", "0", // P2
-      "1", "1", 
-      "1", "1",
-      "2", "2", 
-      "2", "2",
-    ]);
+    ui = new FakeUI();
 
     game = new Game(players, deck, ui);
   });
@@ -84,47 +103,28 @@ describe("Game - Normal 8-turn", () => {
     });
   });
 
-  test("1Action - P1 place 0 on own 0", async () => {
-    ui.pushInputs(["1", "0", "0"]); // add inputs just before this step
+  test("1Action - Place on My Field", async () => {
+    ui.pushInputs("1");
     await game.takeTurn();
-    expect(p1.caravans[0].size()).toBe(2);
+    
+    expect(ui.currentPlayer.caravans[0].size()).toBe(2);
   });
-  test("1Action - P2 place 4 on own 2", async () => {
-    ui.pushInputs(["1", "4", "2"]);
+  test("2Action - Place on Other Field", async () => {
+    ui.pushInputs("2");
     await game.takeTurn();
-    expect(p2.caravans[2].size()).toBe(2);
+    
+    expect(ui.currentOpponent.caravans[0].size()).toBe(3);
   });
-  test("2Action - P1 place 0 on other 0", async () => {
-    ui.pushInputs(["2", "0", "0"]);
+  test("3Action - Clear Caravan", async () => {
+    ui.pushInputs("3");
     await game.takeTurn();
-    expect(p2.caravans[0].size()).toBe(2);
+    expect(ui.currentPlayer.caravans[0].size()).toBe(0);
   });
-  test("2Action - P2 place 4 on other 2", async () => {
-    ui.pushInputs(["2", "4", "2"]);
+  test("4Action - Discard 1", async () => {
+    ui.pushInputs("4");
+    const initialCard = p2.hand[ui.lastCardIndex];
     await game.takeTurn();
-    expect(p1.caravans[2].size()).toBe(2);
-  });
-  test("3Action - P1 clears own 0", async () => {
-    ui.pushInputs(["3", "0"]);
-    await game.takeTurn();
-    expect(p1.caravans[0].size()).toBe(0);
-  });
-  test("3Action - P2 clears own 2", async () => {
-    ui.pushInputs(["3", "2"]);
-    await game.takeTurn();
-    expect(p2.caravans[2].size()).toBe(0);
-  });
-  test("4Action - P1 discards #0", async () => {
-    ui.pushInputs(["4", "0"]);
-    const initialCard = p1.hand[0];
-    await game.takeTurn();
-    expect(p1.hand[0]).not.toBe(initialCard);
-  });
-  test("4Action - P2 discards #4", async () => {
-    ui.pushInputs(["4", "4"]);
-    const initialCard = p2.hand[4];
-    await game.takeTurn();
-    expect(p1.hand[4]).not.toBe(initialCard);
+    expect(ui.currentPlayer.hand[ui.lastCardIndex]).not.toBe(initialCard);
   });
 });
 describe("Game - Basic", () => {
