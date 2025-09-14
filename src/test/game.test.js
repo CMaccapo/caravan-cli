@@ -32,11 +32,11 @@ class FakeUI {
       answer = idx >= 0 ? idx.toString() : defaultCaravanIndex;
       this.lastCaravanIndex = parseInt(answer, 10);
     } 
-    else {
-      answer = this.inputs[this.index++] || "0";
+    else if (this.inputs[this.index] !== undefined){
+      answer = this.inputs[this.index];
+      this.index++;
     }
-    //console.log(`${prompt}\n${answer}`);
-
+    console.log(`${prompt}\n${answer}`);
     return answer;
   }
   nextNumericCardIndex(){

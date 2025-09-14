@@ -37,7 +37,7 @@ const Actions = {
   },
   async pregameExecute(player, opponent, deck, ui) {
     const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
-    const sIdx = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
+    const sIdx = parseInt(await ui.ask("Choose empty caravan index (0-2): "), 10);
 
     if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase="pregame")) return false;
     return Placement.pregamePlace(player, cIdx, sIdx); 
