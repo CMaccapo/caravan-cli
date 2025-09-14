@@ -22,19 +22,14 @@ class FakeUI {
 
     if (prompt.includes("card index") && this.currentPlayer) {
       const defaultCardIndex = "0";
-      if (this.nextEmptyCaravanIndex()){
-          answer = this.nextNumericCardIndex();
-        }
-        else {
-          answer = defaultCardIndex;
-        }
+      answer = nextNumericCardIndex(this.currentPlayer);
       this.lastCardIndex = parseInt(answer, 10);
     } 
     else if (prompt.includes("caravan index")){
       const defaultCaravanIndex = "0";
       if (prompt.includes("caravan index")){
-        if (this.nextEmptyCaravanIndex()){
-          answer = this.nextEmptyCaravanIndex();
+        if (nextEmptyCaravanIndex(this.currentPlayer)){
+          answer = nextEmptyCaravanIndex(this.currentPlayer);
         }
         else {
           answer = defaultCaravanIndex;
@@ -49,18 +44,6 @@ class FakeUI {
     console.log(`${prompt}\n${answer}`);
     return answer;
   }
-  nextNumericCardIndex(){
-    for (let result=0; result < this.currentPlayer.hand.length; result++){
-      if (this.currentPlayer.hand[result].type == "numeric") return result;
-    }
-    return false;
-  }
-  nextEmptyCaravanIndex(){
-    for (let result=0; result < this.currentPlayer.caravans.length; result++){
-      if (this.currentPlayer.caravans[result].isEmpty()) return result;
-    }
-    return false;
-  }
 
   async askAction(player) {
     return this.ask(`Action for ${player.name}: `);
@@ -69,6 +52,19 @@ class FakeUI {
   printState(players, deck) {}
   notify(msg) { this.logs.push(msg); }
   close() {}
+}
+
+function nextNumericCardIndex(player){
+  for (let result=0; result < player.hand.length; result++){
+    if (player.hand[result].type == "numeric") return result;
+  }
+  return false;
+}
+function nextEmptyCaravanIndex(player){
+  for (let result=0; result < player.caravans.length; result++){
+    if (player.caravans[result].isEmpty()) return result;
+  }
+  return false;
 }
 
 
