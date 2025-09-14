@@ -1,13 +1,14 @@
 const Validator = {
-  canPlaceOnOwn(player, cardIndex, caravanIndex, phase = "main") {
+  canPlaceOnOwn(player, cardIndex, caravanIndex, phase) {
     const card = player.hand[cardIndex];
     const caravan = player.caravans[caravanIndex];
 
     if (!card || !caravan) return false;
+    console.log(card.type);
 
+    if (card.type != "numeric") return false;
     if (phase === "pregame") {
-      if (!card.type == "numeric") return false;         // only numeric cards
-      if (!caravan.isEmpty()) return false;       // only empty caravans
+      if (!caravan.isEmpty()) return false;
     }
 
     return true;
