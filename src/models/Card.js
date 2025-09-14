@@ -3,11 +3,12 @@ class Card {
     this.value = value;
     this.suit = suit;
     this.type = type;
+    this.points = this.setPoints();
   }
   toString() {
     return `${this.value}${this.suit}`;
   }
-  getPoints(){
+  setPoints(){
     if (this.value === 'A') {
       return 1;
     } else if (!isNaN(this.value)) {

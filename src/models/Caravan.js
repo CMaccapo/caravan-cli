@@ -1,6 +1,13 @@
 class Caravan {
   constructor() {
     this.cards = [];
+    this.direction = null;
+  }
+
+  setDirection(){
+    const lastCard = this.cards[this.cards-1];
+    const nextLastCard = this.cards[this.cards-2];
+    //if (lastCard)
   }
 
   addCard(card) {
@@ -26,7 +33,11 @@ class Caravan {
   }
 
   getPoints() {
-    return this.cards.reduce((sum, card) => sum + card.getPoints(), 0);
+    let result = null;    
+    for (const card of this.cards) {
+      result += card.points;
+    }
+    return result;
   }
   
   isSellable() {
