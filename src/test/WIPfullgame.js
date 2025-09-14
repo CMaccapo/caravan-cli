@@ -41,7 +41,7 @@ class FakeUI {
       answer = this.inputs[this.index];
       this.index++;
     }
-    console.log(`${prompt}\n${answer}`);
+    //console.log(`${prompt}\n${answer}`);
     return answer;
   }
 
