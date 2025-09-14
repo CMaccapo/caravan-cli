@@ -22,14 +22,24 @@ class FakeUI {
 
     if (prompt.includes("card index") && this.currentPlayer) {
       const defaultCardIndex = "0";
-      const idx = this.nextNumericCardIndex();
-      answer = idx >= 0 ? idx.toString() : defaultCardIndex;
+      if (this.nextEmptyCaravanIndex()){
+          answer = this.nextNumericCardIndex();
+        }
+        else {
+          answer = defaultCardIndex;
+        }
       this.lastCardIndex = parseInt(answer, 10);
     } 
     else if (prompt.includes("caravan index")){
       const defaultCaravanIndex = "0";
-      const idx = this.nextEmptyCaravanIndex();
-      answer = idx >= 0 ? idx.toString() : defaultCaravanIndex;
+      if (prompt.includes("caravan index")){
+        if (this.nextEmptyCaravanIndex()){
+          answer = this.nextEmptyCaravanIndex();
+        }
+        else {
+          answer = defaultCaravanIndex;
+        }
+      }
       this.lastCaravanIndex = parseInt(answer, 10);
     } 
     else if (this.inputs[this.index] !== undefined){
@@ -40,10 +50,16 @@ class FakeUI {
     return answer;
   }
   nextNumericCardIndex(){
-    return this.currentPlayer.hand.findIndex(c => c.isNumeric && c.isNumeric());
+    for (let result=0; result < this.currentPlayer.hand.length; result++){
+      if (this.currentPlayer.hand[result].type == "numeric") return result;
+    }
+    return false;
   }
   nextEmptyCaravanIndex(){
-    return this.currentPlayer.caravans.findIndex(c => c.isEmpty());
+    for (let result=0; result < this.currentPlayer.caravans.length; result++){
+      if (this.currentPlayer.caravans[result].isEmpty()) return result;
+    }
+    return false;
   }
 
   async askAction(player) {
