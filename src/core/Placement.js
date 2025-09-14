@@ -1,7 +1,5 @@
 const Placement = {
   pregamePlace(player, cardIndex, caravanIndex){
-    if (!player.hand[cardIndex] || !player.caravans[caravanIndex]) return false;
-    if (!player.caravans[caravanIndex].isEmpty()) return false;
     player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
     player.hand.splice(cardIndex, 1);
     return true;
