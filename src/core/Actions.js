@@ -2,13 +2,13 @@ const Placement = require("./Placement");
 const Validator = require("./Validator");
 
 const Actions = {
-  async execute(choice, player, opponent, deck, ui) {
+  async execute(choice, player, opponent, deck, ui, phase) {
     switch (choice) {
       case "1": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const sIdx = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
         
-        if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase="main")) return false;
+        if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase)) return false;
         return Placement.placeOnOwn(player, cIdx, sIdx); // returns true/false
       }
       case "2": {

@@ -81,5 +81,23 @@ describe("Action 1", () => {
     expect(success).toBe(false);  // action should fail
     expect(p1.caravans[caravanIndex].cards.length).toBe(0);
   });
-  
+  test("Action 1 - Pregame Add to Nonempty Fails", async () => {
+    const deck = new Deck();
+    const p1 = new Player("P1", deck);
+    const p2 = new Player("P2", deck);
+
+    // Find a valid numeric card in the player's hand
+    const cardIndex = p1.hand.findIndex(c => c.type === "numeric");;
+    const caravanIndex = 0; // first caravan, should be empty
+
+    // Fake UI will return these indices in order
+    const ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+
+    await Actions.execute("1", p1, p2, deck, ui);
+    const success = await Actions.execute("1", p1, p2, deck, ui);
+
+    // Assertions
+    expect(success).toBe(false);  // action should fail
+    expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+  });
 });
