@@ -31,7 +31,7 @@ describe("Game (Static) - Happy", () => {
     const ui = new SilentUI(["0", "0"]);
     const game = new Game([p1, p2], deck, ui);
 
-    await Actions.pregameExecute(p1, p2, deck, ui);
+    await Actions.execute("1", p1, p2, deck, ui);
 
     expect(p1.caravans[0].size()).toBe(1);
   });
@@ -59,7 +59,7 @@ describe("Game (Static) - Sad", () => {
     p1.hand = [new Card("K", "♠", "special")]; // invalid
     const ui = new SilentUI(["0", "0"]);
 
-    const result = await Actions.pregameExecute(p1, p2, deck, ui);
+    const result = await Actions.execute("1", p1, p2, deck, ui);
 
     expect(result).toBe(false);
   });

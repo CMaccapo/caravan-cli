@@ -29,7 +29,7 @@ class Game {
 
       if (this.phase === "pregame") {
         this.ui.notify(`${player.name}'s pregame turn.`);
-        success = await Actions.pregameExecute(player, opponent, this.deck, this.ui);
+        success = await Actions.execute("1", player, opponent, this.deck, this.ui);
       } else {
         const choice = await this.ui.askAction(player);
         success = await Actions.execute(choice, player, opponent, this.deck, this.ui);
