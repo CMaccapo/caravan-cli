@@ -52,30 +52,6 @@ class Game {
     }
   }
 
-  async pregameAction(player) {
-    this.ui.notify(`${player.name}'s pregame turn (must place a card on your own mat in an empty caravan).`);
-
-    const cIdx = parseInt(await this.ui.ask("Choose card index from hand: "), 10);
-    const sIdx = parseInt(await this.ui.ask("Choose caravan index (0-2): "), 10);
-
-    if (!player.hand[cIdx]) {
-      this.ui.notify("Invalid card index. Try again.");
-      return false;
-    }
-
-    if (!player.caravans[sIdx]) {
-      this.ui.notify("Invalid caravan index. Try again.");
-      return false;
-    }
-
-    if (!player.caravans[sIdx].isEmpty()) {
-      this.ui.notify("caravan is not empty. Choose an empty caravan.");
-      return false;
-    }
-
-    return true;
-  }
-
   isOver(){
     if (this.deck.count < 1) {
       return true;
