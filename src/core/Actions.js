@@ -27,7 +27,7 @@ const Actions = {
       case "4": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
 
-        if (!Validator.canDiscardHandCard(player, cIdx));
+        if (!Validator.canDiscardHandCard(player, cIdx)) return false;
         return Placement.discardHandCard(player, cIdx);
       }
       default:
