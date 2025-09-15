@@ -110,3 +110,49 @@ describe("Direction", () => {
     expect(p1.caravans[caravanIndex].direction).toBe(expectDirection);
   });
 });
+
+describe("Card Attachments", () => {
+  let deck, p1, p2, ui, game;
+  let caravanIndex, playIndex, baseIndex;
+
+  beforeEach(() => {
+    deck = new Deck();
+    p1 = new Player("P1", deck);
+    p2 = new Player("P2", deck);
+    caravanIndex = 0;
+    playIndex = 0;
+    baseIndex = 0;
+
+    p1.hand = [
+      new Card("6", "♦", "numeric"),
+      new Card("Q", "♦", "special"), 
+      new Card("Q", "♥", "special")
+    ];
+
+    p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
+
+    ui = new SilentUI();
+    game = new Game([p1, p2], deck, ui);
+    game.phase = "main"; 
+  });
+  describe("Attachments Happy", () => {
+    test("Attach 1 Q", async () => {
+      playIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
+    });
+    test("Attach 2 Q", async () => {
+      playIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      let success = await Actions.execute("1", p1, p2, deck, ui, "main");
+      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(2);
+    });
+  });
+});
