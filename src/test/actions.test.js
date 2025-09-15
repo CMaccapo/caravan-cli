@@ -42,86 +42,54 @@ class FakeUI {
   printState() {}
   close() {}
 }
+describe("Actions", () => {
+  let deck, p1, p2, cardIndex, caravanIndex, ui;
+  beforeEach(() => {
+      deck = new Deck();
+      p1 = new Player("P1", deck);
+      p2 = new Player("P2", deck);
+      cardIndex = p1.hand.findIndex(c => c.type === "numeric");
+      caravanIndex = 0;
+      ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+    });
+  describe("Action 1 Happy", () => {
+    test("Action 1 - Valid placement succeeds", async () => {
+      const success = await Actions.execute("1", p1, p2, deck, ui);
 
-describe("Action 1 Happy", () => {
-  test("Action 1 - Valid placement succeeds", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
+      expect(success).toBe(true);  
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1); // card added to caravan
+      expect(p1.hand.includes(p1.caravans[caravanIndex].cards[cardIndex])).toBe(false); // card is no longer in hand
+    });
+    test("Action 1 - Can place on nonempty in main", async () => {
+      await Actions.execute("1", p1, p2, deck, ui, "main");
+      cardIndex = p1.hand.findIndex(c => c.type === "numeric");
+      ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+      
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
 
-    // Find a valid numeric card in the player's hand
-    const cardIndex = p1.hand.findIndex(c => c.type === "numeric");
-    const caravanIndex = 0; // first caravan, should be empty
-
-    // Fake UI will return these indices in order
-    const ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-
-    const success = await Actions.execute("1", p1, p2, deck, ui);
-
-    // Assertions
-    expect(success).toBe(true);  // action should succeed
-    expect(p1.caravans[caravanIndex].cards.length).toBe(1); // card added to caravan
-    expect(p1.hand.includes(p1.caravans[caravanIndex].cards[cardIndex])).toBe(false);            // card is no longer in hand
+      expect(success).toBe(true);  
+      expect(p1.caravans[caravanIndex].cards.length).toBe(2);
+    });
   });
-  test("Action 1 - Can place on nonempty in main", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
+  describe("Action 1 Sad", () => {
+    test("Action 1 - Invalid card  fails", async () => {
+      cardIndex = 10;
+      ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
 
-    let cardIndex = p1.hand.findIndex(c => c.type === "numeric");
-    const caravanIndex = 0;
+      const success = await Actions.execute("1", p1, p2, deck, ui);
 
-    let ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+      expect(success).toBe(false); 
+      expect(p1.caravans[caravanIndex].cards.length).toBe(0);
+    });
+    test("Action 1 - Pregame Add to Nonempty Fails", async () => {
+      await Actions.execute("1", p1, p2, deck, ui, "pregame");
+      cardIndex = p1.hand.findIndex(c => c.type === "numeric");
+      ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+      
+      const success = await Actions.execute("1", p1, p2, deck, ui, "pregame");
 
-    await Actions.execute("1", p1, p2, deck, ui, "main");
-    cardIndex = p1.hand.findIndex(c => c.type === "numeric");
-    ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-    
-    const success = await Actions.execute("1", p1, p2, deck, ui, "main");
-
-    expect(success).toBe(true);  
-    expect(p1.caravans[caravanIndex].cards.length).toBe(2);
-  });
-});
-describe("Action 1 Sad", () => {
-  test("Action 1 - Invalid card  fails", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-
-    // Find a valid numeric card in the player's hand
-    const cardIndex = 10;
-    const caravanIndex = 0; // first caravan, should be empty
-
-    // Fake UI will return these indices in order
-    const ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-
-    const success = await Actions.execute("1", p1, p2, deck, ui);
-
-    // Assertions
-    expect(success).toBe(false);  // action should fail
-    expect(p1.caravans[caravanIndex].cards.length).toBe(0);
-  });
-  test("Action 1 - Pregame Add to Nonempty Fails", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-
-    // Find a valid numeric card in the player's hand
-    let cardIndex = p1.hand.findIndex(c => c.type === "numeric");;
-    const caravanIndex = 0; // first caravan, should be empty
-
-    // Fake UI will return these indices in order
-    let ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-
-    await Actions.execute("1", p1, p2, deck, ui, "pregame");
-    cardIndex = p1.hand.findIndex(c => c.type === "numeric");
-    ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-    
-    const success = await Actions.execute("1", p1, p2, deck, ui, "pregame");
-
-    // Assertions
-    expect(success).toBe(false);  // action should fail
-    expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+      expect(success).toBe(false); 
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+    });
   });
 });
