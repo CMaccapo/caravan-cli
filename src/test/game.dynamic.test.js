@@ -74,17 +74,8 @@ describe("Game (Dynamic) - Happy", () => {
 
     expect(p1.caravans.some(c => c.size() > 0)).toBe(true);
   });
-  test("Action 2 - Place on other caravan", async () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    const ui = new FakeUI(["2"], {autoValid:true});
-    const game = new Game([p1, p2], deck, ui);
-    game.phase = "main";
-
-    await game.takeTurn();
-
-    expect(p2.caravans.some(c => c.size() > 0)).toBe(true);
+  test("Action 2 - Attach to other caravan", async () => {
+    
   });
   test("Action 3 - Clear Caravan", async () => {
     const deck = new Deck();

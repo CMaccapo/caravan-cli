@@ -21,7 +21,7 @@ const Validator = {
     }
     return true;
   },
-  canAttach(player, cardIndex, caravanIndex, phase){
+  canAttachToOwn(player, cardIndex, caravanIndex, phase){
     const card = player.hand[cardIndex];
     const caravan = player.caravans[caravanIndex];
 
@@ -32,11 +32,16 @@ const Validator = {
 
     return true;
   },
-
-  canPlaceOnOpponent(player, cardIndex, opponent, caravanIndex) {
+  canAttachToOpponent(player, cardIndex, caravanIndex, opponent, phase){
     const card = player.hand[cardIndex];
     const caravan = opponent.caravans[caravanIndex];
-    return !!card && !!caravan;
+
+    if (!card || !caravan) return false;
+
+    if (card.type !== "special") return false;
+    if (phase === "pregame") return false;
+
+    return true;
   },
 
   canDiscardCaravan(player, caravanIndex) {

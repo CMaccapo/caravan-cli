@@ -17,7 +17,7 @@ const Actions = {
         }
         else if (player.hand[cardIndex].type == "special"){
           const attachToIndex = parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
-          if (!Validator.canAttach(player, cardIndex, caravanIndex, phase)) return false;
+          if (!Validator.canAttachToOwn(player, cardIndex, caravanIndex, phase)) return false;
           return Placement.attachToOwn(player, cardIndex, caravanIndex, attachToIndex);
         }
         
@@ -26,9 +26,10 @@ const Actions = {
       case "2": {
         const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const caravanIndex = parseInt(await ui.ask("Choose opponent caravan index (0-2): "), 10);
+        const attachToIndex = parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
         
-        if (!Validator.canPlaceOnOpponent(player, cardIndex, opponent, caravanIndex)) return false;
-        return Placement.placeOnOpponent(player, cardIndex, opponent, caravanIndex);
+        if (!Validator.canAttachToOpponent(player, cardIndex, caravanIndex, opponent, phase)) return false;
+        return Placement.attachToOpponent(player, cardIndex, caravanIndex, attachToIndex, opponent);
       }
       case "3": {
         const caravanIndex = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
