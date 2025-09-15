@@ -1,11 +1,14 @@
 const Validator = {
+  placeExists(player, cardIndex, caravanIndex){
+    const card = player.hand[cardIndex];
+    const caravan = player.caravans[caravanIndex];
+    if (!card || !caravan) return false;
+    return true;
+  },
   canPlaceOnOwn(player, cardIndex, caravanIndex, phase) {
     const card = player.hand[cardIndex];
     const caravan = player.caravans[caravanIndex];
-
-    if (!card || !caravan) return false;
-
-    if (card.type != "numeric") return false;
+    if (card.type !== "numeric") return false;
     if (phase === "pregame") {
       if (!caravan.isEmpty()) return false;
     }
@@ -16,6 +19,17 @@ const Validator = {
       if (caravan.direction === "asc" && card.points < lastCard.points) return false;
       if (caravan.direction === "desc" && card.points > lastCard.points) return false;
     }
+    return true;
+  },
+  canAttach(player, cardIndex, caravanIndex, phase){
+    const card = player.hand[cardIndex];
+    const caravan = player.caravans[caravanIndex];
+
+    if (!card || !caravan) return false;
+
+    if (card.type !== "special") return false;
+    if (phase === "pregame") return false;
+
     return true;
   },
 
