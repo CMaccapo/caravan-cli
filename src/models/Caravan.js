@@ -32,13 +32,19 @@ class Caravan {
 
   addCard(card) {
     if (!card) return false;
-    this.addNumericCard(card)
+    this.cards.push(card);
     this.setDirection();
     this.setSuit();
     return true;
   }
-  addNumericCard(card){
-    this.cards.push(card);
+
+  removeCard(pickedCard) {
+    if (!pickedCard) return false;
+    if (!this.cards.includes(pickedCard)) return false;
+    this.cards = this.cards.filter(card => card !== pickedCard);
+    this.setDirection();
+    this.setSuit();
+    return true;
   }
 
   clear() {
