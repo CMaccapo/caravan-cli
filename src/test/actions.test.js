@@ -14,23 +14,18 @@ class FakeUI {
  async ask(prompt) {
   if (this.index < this.inputs.length) {
     const ans = this.inputs[this.index++];
-    //console.log(`[FakeUI.ask] scripted: ${prompt} -> ${ans}`);
     return ans;
   }
 
   if (this.autoValid && prompt.includes("card index")) {
     const idx = this.currentPlayer.hand.findIndex(c => c.type === "numeric");
-    //console.log(`[FakeUI.ask] auto card: ${prompt} -> ${idx}`);
     return String(idx >= 0 ? idx : 0);
   }
 
   if (this.autoValid && prompt.includes("caravan index")) {
     const idx = this.currentPlayer.caravans.findIndex(c => c.isEmpty());
-    //console.log(`[FakeUI.ask] auto caravan: ${prompt} -> ${idx}`);
     return String(idx >= 0 ? idx : 0);
   }
-
-  //console.log(`[FakeUI.ask] fallback invalid: ${prompt} -> 99`);
   return "99";
 }
 
@@ -42,6 +37,7 @@ class FakeUI {
   printState() {}
   close() {}
 }
+
 describe("Actions", () => {
   let deck, p1, p2, cardIndex, caravanIndex, ui;
   beforeEach(() => {
