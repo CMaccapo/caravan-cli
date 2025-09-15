@@ -12,6 +12,13 @@ const Placement = {
     return true;
   },
 
+  attachToOwn(player, handIndex, caravanIndex, attachToIndex) {
+    if (!player.hand[handIndex] || !player.caravans[caravanIndex]) return false;
+    player.caravans[caravanIndex].cards[attachToIndex].attachCard(player.hand[handIndex]);
+    player.hand.splice(handIndex, 1);
+    return true;
+  },
+
   placeOnOpponent(actor, cardIndex, opponent, caravanIndex) {
     if (!actor.hand[cardIndex] || !opponent.caravans[caravanIndex]) return false;
     opponent.caravans[caravanIndex].addCard(actor.hand[cardIndex]);

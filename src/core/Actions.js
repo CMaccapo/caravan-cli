@@ -7,9 +7,18 @@ const Actions = {
       case "1": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const sIdx = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
+
+        if (player.hand[cIdx] != null && player.hand[cIdx].type == "numeric"){
+          if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase)) return false;
+          return Placement.placeOnOwn(player, cIdx, sIdx);
+        }
+        else if (player.hand[cIdx] != null && player.hand[cIdx].type == "special"){
+          const attachToIndex = parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
+          //if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, attachToIndex)) return false;
+          return Placement.attachToOwn(player, cIdx, sIdx, attachToIndex);
+        }
         
-        if (!Validator.canPlaceOnOwn(player, cIdx, sIdx, phase)) return false;
-        return Placement.placeOnOwn(player, cIdx, sIdx); // returns true/false
+        return false;
       }
       case "2": {
         const cIdx = parseInt(await ui.ask("Choose card index from hand: "), 10);

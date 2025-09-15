@@ -4,6 +4,7 @@ class Card {
     this.suit = suit;
     this.type = type;
     this.points = this.setPoints();
+    this.attachments = [];
   }
   toString() {
     return `${this.value}${this.suit}`;
@@ -16,6 +17,11 @@ class Card {
     } else {
       return 0;
     }
+  }
+  attachCard(cardToAttach){
+    if (!cardToAttach) return false;
+    this.attachments.push(cardToAttach);
+    return true;
   }
 
 }
