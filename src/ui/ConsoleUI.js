@@ -23,14 +23,14 @@ class ConsoleUI {
     return await this.ask("Choose action: ");
   }
 
-  printState(players, deck) {
+  printState(players, deck) { 
     console.log("\n=== GAME STATE ===");
     players.forEach((p) => {
       console.log(`\n${p.name}`);
       console.log("Hand:", p.handToString());
       console.log(`${p.name}'s caravans:`);
       p.caravans.forEach((caravan, index) => {
-        console.log(`  Caravan ${index}: [${caravan.cards.join(", ")}]`);
+        console.log(`  Caravan ${index}: [${caravan.toString()}]`);
       });
     });
     console.log(`\nDeck: ${deck.count} cards left`);

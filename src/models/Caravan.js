@@ -5,6 +5,16 @@ class Caravan {
     this.suit = null;
   }
 
+  toString() {
+    return this.cards.map(card => {
+      if (card.type === "numeric") {
+        const attachments = card.attachments?.map(att => att.toString()).join(", ");
+        return attachments ? `${card.toString()} [${attachments}]` : card.toString();
+      }
+      return card.toString();
+    }).join(", ");
+  }
+
   setDirection(){
     if (this.cards.length >= 2){
       const lastCard = this.cards[this.cards.length-1];
