@@ -45,13 +45,13 @@ class FakeUI {
 describe("Actions", () => {
   let deck, p1, p2, cardIndex, caravanIndex, ui;
   beforeEach(() => {
-      deck = new Deck();
-      p1 = new Player("P1", deck);
-      p2 = new Player("P2", deck);
-      cardIndex = p1.hand.findIndex(c => c.type === "numeric");
-      caravanIndex = 0;
-      ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
-    });
+    deck = new Deck();
+    p1 = new Player("P1", deck);
+    p2 = new Player("P2", deck);
+    cardIndex = p1.hand.findIndex(c => c.type === "numeric");
+    caravanIndex = 0;
+    ui = new FakeUI([cardIndex.toString(), caravanIndex.toString()], {autoValid:false});
+  });
   describe("Action 1 Happy", () => {
     test("Action 1 - Valid placement succeeds", async () => {
       const success = await Actions.execute("1", p1, p2, deck, ui);

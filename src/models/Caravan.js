@@ -2,6 +2,7 @@ class Caravan {
   constructor() {
     this.cards = [];
     this.direction = null;
+    this.suit = null;
   }
 
   setDirection(){
@@ -20,11 +21,20 @@ class Caravan {
       this.direction = null;
     }
   }
+  setSuit(){
+    if (this.cards.length > 0){
+      this.suit = this.cards[this.cards.length-1].suit;
+    }
+    else{
+      this.suit = null;
+    }
+  }
 
   addCard(card) {
     if (!card) return false;
     this.addNumericCard(card)
     this.setDirection();
+    this.setSuit();
     return true;
   }
   addNumericCard(card){
