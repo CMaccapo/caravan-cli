@@ -9,18 +9,20 @@ class PlayField {
       )
     );
   }
+  getACaravan(playerIndex, caravanIndex) {
+    return this.players[playerIndex].caravans[caravanIndex];
+  }
+  getACard(playerIndex, caravanIndex, cardIndex) {
+    return this.players[playerIndex].caravans[caravanIndex].cards[cardIndex];
+  }
   removeAllValue(value){
     if (!value) return false;
-    return this.cards.filter(card => card.value !== value);
-    // this.setDirection();
-    // this.setSuit();
+    this.cards = this.cards.filter(card => card.value !== value);
     return true;
   }
   removeAllSuit(suit){
     if (!suit) return false;
-    return this.cards.filter(card => card.suit !== suit);
-    // this.setDirection();
-    // this.setSuit();
+    this.cards =  this.cards.filter(card => card.suit !== suit);
     return true;
   }
 }
