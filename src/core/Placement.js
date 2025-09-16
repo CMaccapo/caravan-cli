@@ -13,14 +13,14 @@ const Placement = {
     return true;
   },
 
-  attach(playerPlaying, handIndex, caravanIndex, attachToIndex, playerPlayed) {
+  attach(playerPlaying, handIndex, caravanIndex, attachToIndex, playerPlayed, playField) {
     const cardToAttach = playerPlaying.hand[handIndex];
     const targetCard = playerPlayed.caravans[caravanIndex].cards[attachToIndex];
     
     targetCard.attachCard(cardToAttach);
     playerPlaying.hand.splice(handIndex, 1);
     
-    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard, cardToAttach);
+    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard, cardToAttach, playField);
   },
 
   discardCaravan(player, caravanIndex) {

@@ -2,7 +2,7 @@ const Placement = require("./Placement");
 const Validator = require("./Validator");
 
 const Actions = {
-  async execute(choice, player, opponent, deck, ui, phase) {
+  async execute(choice, player, opponent, deck, ui, phase, playField) {
     switch (choice) {
       case "1": {
         const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
@@ -23,7 +23,7 @@ const Actions = {
             player.hand[cardIndex].value
           ) 
           if (!Validator.canAttach(player, cardIndex, caravanIndex, player, phase)) return false;
-          return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, player);
+          return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, player, playField);
         }
         
         return false;
@@ -39,7 +39,7 @@ const Actions = {
         ) 
         
         if (!Validator.canAttach(player, cardIndex, caravanIndex, opponent, phase)) return false;
-        return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, opponent);
+        return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, opponent, playField);
       }
       case "3": {
         const caravanIndex = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);

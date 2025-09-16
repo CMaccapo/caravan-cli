@@ -1,11 +1,11 @@
 const Actions = require("./Actions");
 const Placement = require("./Placement");
-const Playfield = require("../models/Playfield");
+const playField = require("../models/PlayField");
 
 class Game {
   constructor(players, deck, ui) {
     this.players = players;
-    this.playfield = new Playfield(players);
+    this.playField = new playField(players);
     this.deck = deck;
     this.ui = ui;
     this.current = 0;
@@ -34,7 +34,7 @@ class Game {
         success = await Actions.execute("1", player, opponent, this.deck, this.ui, this.phase);
       } else {
         const choice = await this.ui.askAction(player);
-        success = await Actions.execute(choice, player, opponent, this.deck, this.ui, this.phase);
+        success = await Actions.execute(choice, player, opponent, this.deck, this.ui, this.phase, this.playField);
       }
 
       if (!success) {

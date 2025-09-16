@@ -1,4 +1,4 @@
-class Playfield {
+class PlayField {
   constructor(players) {
     this.players = players;
   }
@@ -16,6 +16,13 @@ class Playfield {
     // this.setSuit();
     return true;
   }
+  removeAllSuit(suit){
+    if (!suit) return false;
+    return this.cards.filter(card => card.suit !== suit);
+    // this.setDirection();
+    // this.setSuit();
+    return true;
+  }
 }
 
-module.exports = Playfield;
+module.exports = PlayField;
