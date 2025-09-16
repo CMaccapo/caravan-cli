@@ -1,9 +1,11 @@
 const Actions = require("./Actions");
 const Placement = require("./Placement");
+const Playfield = require("../models/Playfield");
 
 class Game {
   constructor(players, deck, ui) {
     this.players = players;
+    this.playfield = new Playfield(players);
     this.deck = deck;
     this.ui = ui;
     this.current = 0;
