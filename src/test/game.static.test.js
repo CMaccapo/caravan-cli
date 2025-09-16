@@ -126,17 +126,18 @@ describe("Card Attachments", () => {
     p1.hand = [
       new Card("6", "♦", "numeric"),
       new Card("Q", "♦", "special"), 
-      new Card("Q", "♥", "special")
+      new Card("J", "♥", "special")
     ];
 
     p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
+    p2.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
 
     ui = new SilentUI();
     game = new Game([p1, p2], deck, ui);
     game.phase = "main"; 
   });
   describe("Attachments Happy", () => {
-    test("Attach 1 Q", async () => {
+    test("Attach 1 Face Card", async () => {
       playIndex = 1;
       ui.pushInputs([playIndex, caravanIndex,baseIndex]);
       const success = await Actions.execute("1", p1, p2, deck, ui, "main");
@@ -144,7 +145,15 @@ describe("Card Attachments", () => {
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
     });
-    test("Attach 2 Q", async () => {
+    test("Attach 1 Face Card to Opponent", async () => {
+      playIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex, baseIndex]);
+      const success = await Actions.execute("2", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p2.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
+    });
+    test("Jack Removes Card with other attachment - Self", async () => {
       playIndex = 1;
       ui.pushInputs([playIndex, caravanIndex,baseIndex]);
       let success = await Actions.execute("1", p1, p2, deck, ui, "main");
@@ -152,7 +161,15 @@ describe("Card Attachments", () => {
       success = await Actions.execute("1", p1, p2, deck, ui, "main");
 
       expect(success).toBe(true);
-      expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(2);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(0);
+    });
+    test("Jack Removes Card - Opponent", async () => {
+      playIndex = 2;
+      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      success = await Actions.execute("2", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p2.caravans[caravanIndex].cards.length).toBe(0);
     });
   });
 });

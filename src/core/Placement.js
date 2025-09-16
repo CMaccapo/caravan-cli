@@ -1,3 +1,5 @@
+const FaceCardRules = require("./FaceCardRules");
+
 const Placement = {
   pregamePlace(player, cardIndex, caravanIndex){
     player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
@@ -12,9 +14,13 @@ const Placement = {
   },
 
   attach(playerPlaying, handIndex, caravanIndex, attachToIndex, playerPlayed) {
-    playerPlayed.caravans[caravanIndex].cards[attachToIndex].attachCard(playerPlaying.hand[handIndex]);
+    const cardToAttach = playerPlaying.hand[handIndex];
+    const targetCard = playerPlayed.caravans[caravanIndex].cards[attachToIndex];
+    
+    targetCard.attachCard(cardToAttach);
     playerPlaying.hand.splice(handIndex, 1);
-    return true;
+    
+    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard);
   },
 
   discardCaravan(player, caravanIndex) {

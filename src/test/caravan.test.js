@@ -3,8 +3,8 @@ const Card = require("../models/Card");
 
 describe("Cards", () => {
     const cards = [
-        new Card("A", "♠"), 
-        new Card("6", "♦")
+        new Card("A", "♠", "numeric"), 
+        new Card("6", "♦", "numeric")
     ];
     let caravan;
     beforeEach(() => {
