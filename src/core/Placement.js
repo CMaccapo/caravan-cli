@@ -7,20 +7,21 @@ const Placement = {
     return true;
   },
 
-  placeOnOwn(player, cardIndex, caravanIndex) {
-    player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
-    player.hand.splice(cardIndex, 1);
+  place(actionChoice) {
+    actionChoice.targetPlayer.caravans[actionChoice.caravanIndex].addCard(actionChoice.player.hand[actionChoice.handCardIndex]);
+    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
     return true;
   },
 
-  attach(playerPlaying, handIndex, caravanIndex, attachToIndex, playerPlayed, playField) {
-    const cardToAttach = playerPlaying.hand[handIndex];
-    const targetCard = playerPlayed.caravans[caravanIndex].cards[attachToIndex];
+  attach(actionChoice, playField) {
+    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
     
-    targetCard.attachCard(cardToAttach);
-    playerPlaying.hand.splice(handIndex, 1);
+    targetCard.attachCard(card);
+    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
     
-    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard, cardToAttach, playField);
+    return FaceCardRules[card.value](targetCaravan, targetCard, card, playField);
   },
 
   discardCaravan(player, caravanIndex) {

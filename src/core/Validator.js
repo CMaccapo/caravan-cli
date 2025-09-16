@@ -5,7 +5,7 @@ const Validator = {
     if (!card || !caravan) return false;
     return true;
   },
-  canPlaceOnOwn(player, cardIndex, caravanIndex, phase) {
+  canPlace(player, cardIndex, caravanIndex, phase) {
     const card = player.hand[cardIndex];
     const caravan = player.caravans[caravanIndex];
     if (card.type !== "numeric") return false;

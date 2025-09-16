@@ -1,5 +1,6 @@
 const Placement = require("./Placement");
 const Validator = require("./Validator");
+const ActionChoice = require("../models/ActionChoice");
 
 const Actions = {
   async execute(choice, game) {
@@ -11,41 +12,63 @@ const Actions = {
     const playField = game.playField;
     switch (choice) {
       case "1": {
-        const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
+        const handCardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const caravanIndex = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
 
-        if (!Validator.placeExists(player, cardIndex, caravanIndex, phase)) return false;
+        if (!Validator.placeExists(player, handCardIndex, caravanIndex, phase)) return false;
 
-
-        if (player.hand[cardIndex].type == "numeric"){
-          if (!Validator.canPlaceOnOwn(player, cardIndex, caravanIndex, phase)) return false;
-          return Placement.placeOnOwn(player, cardIndex, caravanIndex);
+        if (player.hand[handCardIndex].type == "numeric"){
+          let actionChoice = new ActionChoice({
+            type: "place",
+            player: player,
+            targetPlayer: player,
+            handCardIndex: handCardIndex,
+            caravanIndex: caravanIndex
+          });
+          if (!Validator.canPlace(player, handCardIndex, caravanIndex, phase)) return false;
+          return Placement.place(actionChoice);
         }
-        else if (player.hand[cardIndex].type === "special"){
+        else if (player.hand[handCardIndex].type === "special"){
           const attachToIndex = await getAttachToIndex(
             ui,
             player, 
             caravanIndex,
-            player.hand[cardIndex].value
+            player.hand[handCardIndex].value
           ) 
-          if (!Validator.canAttach(player, cardIndex, caravanIndex, player, phase)) return false;
-          return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, player, playField);
+          let actionChoice = new ActionChoice({
+            type: "attach",
+            player: player,
+            targetPlayer: player,
+            handCardIndex: handCardIndex,
+            caravanIndex: caravanIndex,
+            targetCardIndex: attachToIndex
+          });
+          if (!Validator.canAttach(player, handCardIndex, caravanIndex, player, phase)) return false;
+          return Placement.attach(actionChoice, playField);
         }
         
         return false;
       }
       case "2": {
-        const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
+        const handCardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const caravanIndex = parseInt(await ui.ask("Choose opponent caravan index (0-2): "), 10);
         const attachToIndex = await getAttachToIndex(
           ui,
           opponent, 
           caravanIndex,
-          player.hand[cardIndex].value
-        ) 
+          player.hand[handCardIndex].value
+        )
+        let actionChoice = new ActionChoice({
+          type: "attach",
+          player: player,
+          targetPlayer: opponent,
+          handCardIndex: handCardIndex,
+          caravanIndex: caravanIndex,
+          targetCardIndex: attachToIndex
+        });
         
-        if (!Validator.canAttach(player, cardIndex, caravanIndex, opponent, phase)) return false;
-        return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, opponent, playField);
+        if (!Validator.canAttach(player, handCardIndex, caravanIndex, opponent, phase)) return false;
+        return Placement.attach(actionChoice, playField);
       }
       case "3": {
         const caravanIndex = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
@@ -54,10 +77,10 @@ const Actions = {
         return Placement.discardCaravan(player, caravanIndex);
       }
       case "4": {
-        const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
+        const handCardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
 
-        if (!Validator.canDiscardHandCard(player, cardIndex)) return false;
-        return Placement.discardHandCard(player, cardIndex);
+        if (!Validator.canDiscardHandCard(player, handCardIndex)) return false;
+        return Placement.discardHandCard(player, handCardIndex);
       }
 
       default:
