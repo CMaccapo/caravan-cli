@@ -31,13 +31,24 @@ class Caravan {
       this.direction = null;
     }
   }
-  setSuit(){
-    if (this.cards.length > 0){
-      this.suit = this.cards[this.cards.length-1].suit;
+  reverseDirection(){
+    if (this.direction == "asc") this.direction = "desc";
+    else if (this.direction == "desc") this.direction = "asc";
+    return true;
+  }
+  setSuit(suit){
+    if (suit == null) {
+      if (this.cards.length > 0){
+        this.suit = this.cards[this.cards.length-1].suit;
+      }
+      else{
+        this.suit = null;
+      }
     }
-    else{
-      this.suit = null;
+    else {
+      this.suit = suit;
     }
+    return true;
   }
 
   addCard(card) {

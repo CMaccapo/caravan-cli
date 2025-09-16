@@ -15,8 +15,13 @@ const Actions = {
           if (!Validator.canPlaceOnOwn(player, cardIndex, caravanIndex, phase)) return false;
           return Placement.placeOnOwn(player, cardIndex, caravanIndex);
         }
-        else if (player.hand[cardIndex].type == "special"){
-          const attachToIndex = parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
+        else if (player.hand[cardIndex].type === "special"){
+          const attachToIndex = await getAttachToIndex(
+            ui,
+            player, 
+            caravanIndex,
+            player.hand[cardIndex].value
+          ) 
           if (!Validator.canAttach(player, cardIndex, caravanIndex, player, phase)) return false;
           return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, player);
         }
@@ -26,7 +31,12 @@ const Actions = {
       case "2": {
         const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
         const caravanIndex = parseInt(await ui.ask("Choose opponent caravan index (0-2): "), 10);
-        const attachToIndex = parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
+        const attachToIndex = await getAttachToIndex(
+          ui,
+          opponent, 
+          caravanIndex,
+          player.hand[cardIndex].value
+        ) 
         
         if (!Validator.canAttach(player, cardIndex, caravanIndex, opponent, phase)) return false;
         return Placement.attach(player, cardIndex, caravanIndex, attachToIndex, opponent);
@@ -47,8 +57,14 @@ const Actions = {
       default:
         return false; // invalid choice
     }
-
   }
 };
+async function getAttachToIndex(ui, player, caravanIndex, card) {
+  if (card.value === "Q") {
+    return player.caravans[caravanIndex].cards.length - 1;
+  } else {
+    return parseInt(await ui.ask("Choose index to attach card to in caravan: "), 10);
+  }
+}
 
 module.exports = Actions;

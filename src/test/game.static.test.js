@@ -125,8 +125,9 @@ describe("Card Attachments", () => {
 
     p1.hand = [
       new Card("6", "♦", "numeric"),
-      new Card("Q", "♦", "special"), 
-      new Card("J", "♥", "special")
+      new Card("Q", "♣", "special"), 
+      new Card("J", "♥", "special"),
+      new Card("K", "♥", "special")
     ];
 
     p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
@@ -153,23 +154,52 @@ describe("Card Attachments", () => {
       expect(success).toBe(true);
       expect(p2.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
     });
-    test("Jack Removes Card with other attachment - Self", async () => {
-      playIndex = 1;
-      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+    test("Attach 1 Face Card 2nd Pos", async () => {
+      playIndex = 0;
+      baseIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex]);
       let success = await Actions.execute("1", p1, p2, deck, ui, "main");
-      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      ui.pushInputs([playIndex, caravanIndex, baseIndex]);
       success = await Actions.execute("1", p1, p2, deck, ui, "main");
 
       expect(success).toBe(true);
-      expect(p1.caravans[caravanIndex].cards.length).toBe(0);
+      expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
     });
     test("Jack Removes Card - Opponent", async () => {
       playIndex = 2;
       ui.pushInputs([playIndex, caravanIndex,baseIndex]);
-      success = await Actions.execute("2", p1, p2, deck, ui, "main");
+      const success = await Actions.execute("2", p1, p2, deck, ui, "main");
 
       expect(success).toBe(true);
       expect(p2.caravans[caravanIndex].cards.length).toBe(0);
+    });
+    test("King Doubles Card - Self", async () => {
+      playIndex = 3;
+      ui.pushInputs([playIndex, caravanIndex,baseIndex]);
+      const success = await Actions.execute("1", p1, p2, deck, ui, "main");
+
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards[baseIndex].points).toBe(10);
+    });
+    test("Queen changes suit", async () => {
+      playIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", p1, p2, deck, ui, "main");
+      
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].suit).toBe("♣");
+    });
+    test("Queen reverses direction", async () => {
+      ui.pushInputs([playIndex, caravanIndex]);
+      await Actions.execute("1", p1, p2, deck, ui, "main");
+      expect(p1.caravans[caravanIndex].direction).toBe("asc");
+
+      baseIndex = 1;
+      ui.pushInputs([playIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", p1, p2, deck, ui, "main");
+      
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].direction).toBe("desc");
     });
   });
 });

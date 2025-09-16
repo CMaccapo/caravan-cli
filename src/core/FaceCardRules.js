@@ -1,12 +1,12 @@
 const FaceCardRules = {
-  J: (caravan, targetCard) => {
+  J: (caravan, targetCard, playedCard) => {
     return caravan.removeCard(targetCard);
   },
-  Q: (caravan, targetCard) => {
-    return true;
+  Q: (caravan, targetCard, playedCard) => {
+    return caravan.reverseDirection() && caravan.setSuit(playedCard.suit);
   },
-  K: (caravan, targetCard) => {
-    return true;
+  K: (caravan, targetCard, playedCard) => {
+    return targetCard.doublePoints();
   }
 };
 

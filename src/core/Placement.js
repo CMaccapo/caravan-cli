@@ -20,7 +20,7 @@ const Placement = {
     targetCard.attachCard(cardToAttach);
     playerPlaying.hand.splice(handIndex, 1);
     
-    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard);
+    return FaceCardRules[cardToAttach.value](playerPlayed.caravans[caravanIndex], targetCard, cardToAttach);
   },
 
   discardCaravan(player, caravanIndex) {
