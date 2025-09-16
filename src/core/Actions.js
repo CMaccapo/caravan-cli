@@ -2,7 +2,13 @@ const Placement = require("./Placement");
 const Validator = require("./Validator");
 
 const Actions = {
-  async execute(choice, player, opponent, deck, ui, phase, playField) {
+  async execute(choice, game) {
+    const player = game.currentPlayer;
+    const opponent = game.otherPlayer;
+    const deck = game.deck;
+    const phase = game.phase;
+    const ui = game.ui;
+    const playField = game.playField;
     switch (choice) {
       case "1": {
         const cardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
