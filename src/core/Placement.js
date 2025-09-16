@@ -11,15 +11,9 @@ const Placement = {
     return true;
   },
 
-  attachToOwn(player, handIndex, caravanIndex, attachToIndex) {
-    player.caravans[caravanIndex].cards[attachToIndex].attachCard(player.hand[handIndex]);
-    player.hand.splice(handIndex, 1);
-    return true;
-  },
-
-  attachToOpponent(player, handIndex, caravanIndex, attachToIndex, opponent) {
-    opponent.caravans[caravanIndex].cards[attachToIndex].attachCard(player.hand[handIndex]);
-    player.hand.splice(handIndex, 1);
+  attach(playerPlaying, handIndex, caravanIndex, attachToIndex, playerPlayed) {
+    playerPlayed.caravans[caravanIndex].cards[attachToIndex].attachCard(playerPlaying.hand[handIndex]);
+    playerPlaying.hand.splice(handIndex, 1);
     return true;
   },
 

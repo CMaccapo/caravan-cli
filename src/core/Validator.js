@@ -21,20 +21,9 @@ const Validator = {
     }
     return true;
   },
-  canAttachToOwn(player, cardIndex, caravanIndex, phase){
-    const card = player.hand[cardIndex];
-    const caravan = player.caravans[caravanIndex];
-
-    if (!card || !caravan) return false;
-
-    if (card.type !== "special") return false;
-    if (phase === "pregame") return false;
-
-    return true;
-  },
-  canAttachToOpponent(player, cardIndex, caravanIndex, opponent, phase){
-    const card = player.hand[cardIndex];
-    const caravan = opponent.caravans[caravanIndex];
+  canAttach(playerPlaying, cardIndex, caravanIndex, playerPlayed, phase){
+    const card = playerPlaying.hand[cardIndex];
+    const caravan = playerPlayed.caravans[caravanIndex];
 
     if (!card || !caravan) return false;
 
