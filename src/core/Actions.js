@@ -49,23 +49,13 @@ const Actions = {
         
         return false;
       }
-      case "2": {
-        const handCardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
-        const caravanIndex = parseInt(await ui.ask("Choose opponent caravan index (0-2): "), 10);
-        const attachToIndex = await getAttachToIndex(
+      case "2": {   
+        let actionChoice = await promptActionChoice(
+          "attach",
           ui,
-          opponent, 
-          caravanIndex,
-          player.hand[handCardIndex].value
-        )
-        let actionChoice = new ActionChoice({
-          type: "attach",
-          player: player,
-          targetPlayer: opponent,
-          handCardIndex: handCardIndex,
-          caravanIndex: caravanIndex,
-          targetCardIndex: attachToIndex
-        });
+          player,
+          opponent
+        );
         
         if (!Validator.canAttach(actionChoice, phase)) return false;
         return Placement.attach(actionChoice, playField);
@@ -88,6 +78,29 @@ const Actions = {
     }
   }
 };
+async function promptActionChoice(type, ui, player, targetPlayer) {
+  const handCardIndex = (type == ("place")) || (type ==("attach"))
+    ? parseInt(await ui.ask("Choose card index from hand: "), 10)
+    : null;
+
+  const caravanIndex = type !== "discardHand"
+    ? parseInt(await ui.ask("Choose caravan index (0-2): "), 10)
+    : null;
+
+  let targetCardIndex = null;
+  if (type.includes("attach")) {
+    targetCardIndex = await getAttachToIndex(ui, targetPlayer, caravanIndex, player.hand[handCardIndex].value);
+  }
+
+  return new ActionChoice({
+    type,
+    player,
+    targetPlayer,
+    handCardIndex,
+    caravanIndex,
+    targetCardIndex
+  });
+}
 async function getAttachToIndex(ui, player, caravanIndex, card) {
   if (card.value === "Q") {
     return player.caravans[caravanIndex].cards.length - 1;
