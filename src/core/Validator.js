@@ -5,9 +5,10 @@ const Validator = {
     if (!card || !caravan) return false;
     return true;
   },
-  canPlace(player, cardIndex, caravanIndex, phase) {
-    const card = player.hand[cardIndex];
-    const caravan = player.caravans[caravanIndex];
+  canPlace(actionChoice, phase) {
+    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    
     if (card.type !== "numeric") return false;
     if (phase === "pregame") {
       if (!caravan.isEmpty()) return false;
@@ -21,9 +22,9 @@ const Validator = {
     }
     return true;
   },
-  canAttach(playerPlaying, cardIndex, caravanIndex, playerPlayed, phase){
-    const card = playerPlaying.hand[cardIndex];
-    const caravan = playerPlayed.caravans[caravanIndex];
+  canAttach(actionChoice, phase){
+    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
 
     if (!card || !caravan) return false;
 

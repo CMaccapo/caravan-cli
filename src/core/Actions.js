@@ -25,7 +25,7 @@ const Actions = {
             handCardIndex: handCardIndex,
             caravanIndex: caravanIndex
           });
-          if (!Validator.canPlace(player, handCardIndex, caravanIndex, phase)) return false;
+          if (!Validator.canPlace(actionChoice, phase)) return false;
           return Placement.place(actionChoice);
         }
         else if (player.hand[handCardIndex].type === "special"){
@@ -43,7 +43,7 @@ const Actions = {
             caravanIndex: caravanIndex,
             targetCardIndex: attachToIndex
           });
-          if (!Validator.canAttach(player, handCardIndex, caravanIndex, player, phase)) return false;
+          if (!Validator.canAttach(actionChoice, phase)) return false;
           return Placement.attach(actionChoice, playField);
         }
         
@@ -67,7 +67,7 @@ const Actions = {
           targetCardIndex: attachToIndex
         });
         
-        if (!Validator.canAttach(player, handCardIndex, caravanIndex, opponent, phase)) return false;
+        if (!Validator.canAttach(actionChoice, phase)) return false;
         return Placement.attach(actionChoice, playField);
       }
       case "3": {
