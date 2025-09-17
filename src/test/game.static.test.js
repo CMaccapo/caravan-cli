@@ -24,6 +24,7 @@ class SilentUI {
   printState() {}
   close() {}
 }
+
 describe("Game End", () => {
   test("Caravan win", () => {
     const deck = new Deck();
@@ -56,7 +57,7 @@ describe("Direction", () => {
       new Card("3", "♦", "numeric") 
     ];
 
-    p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
+    p1.caravans[caravanIndex].addCard(new Card("5", "♥", "numeric"));
     p1.caravans[caravanIndex].direction = "asc";
 
     ui = new SilentUI();
@@ -130,8 +131,8 @@ describe("Card Attachments", () => {
       new Card("A", "♣", "numeric")
     ];
 
-    p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
-    p2.caravans[caravanIndex].cards = [new Card("5", "♣", "numeric")];
+    p1.caravans[caravanIndex].addCard(new Card("5", "♥", "numeric"));
+    p2.caravans[caravanIndex].addCard(new Card("5", "♣", "numeric"));
 
     ui = new SilentUI();
     game = new Game([p1, p2], deck, ui);
@@ -159,7 +160,7 @@ describe("Card Attachments", () => {
       {
         name: "Attach 1 Face Card 2nd Pos Self",
         playIndex: 1, fieldIndex: 0, baseIndex: 1,
-        setup: (p1) => { p1.caravans[0].cards.push(p1.hand[0]); },
+        setup: (p1) => { p1.caravans[0].addCard(p1.hand[0]); },
         verify: (p1, p2, caravanIndex, baseIndex) => {
           expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
         },
@@ -192,7 +193,7 @@ describe("Card Attachments", () => {
         name: "Queen reverses direction",
         playIndex: 1, fieldIndex: 0, baseIndex: 1,
         setup: (p1) => {
-          p1.caravans[0].cards.push(p1.hand[0]); // add second card to trigger reverse
+          p1.caravans[0].addCard(p1.hand[0]); // add second card to trigger reverse
           expect(p1.caravans[0].direction).toBe("asc");
         },
         verify: (p1) => {
@@ -203,7 +204,7 @@ describe("Card Attachments", () => {
         name: "Joker removes all with same suit as target Ace",
         playIndex: 4, fieldIndex: 0, baseIndex: 1,
         setup: (p1) => {
-          p1.caravans[0].cards.push(p1.hand[5]); // add Ace
+          p1.caravans[0].addCard(p1.hand[5]); // add Ace
         },
         verify: (p1, p2, caravanIndex) => {
           expect(p1.caravans[caravanIndex].cards.length).toBe(1);
