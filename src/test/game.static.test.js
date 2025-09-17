@@ -235,7 +235,7 @@ describe("Card Attachments", () => {
     const cases = [
       {
         name: "Attach 1 Face Card Invalid",
-        inputs: [1, 0, 0, "11"], // invalid base index
+        inputs: [2, 0, 0, "11"], // invalid base index
         expectSuccess: false,
         verify: (p1, caravanIndex, baseIndex) => {
           expect(p1.caravans[caravanIndex].cards[0].attachments.length).toBe(0);
