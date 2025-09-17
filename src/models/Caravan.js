@@ -68,6 +68,29 @@ class Caravan {
     return true;
   }
 
+  removeSuit(suit) {
+    if (!suit) return false;
+    if (this.cards.length === 0) return true;
+
+    for (card of this.cards){
+      if (card.suit === suit){
+        this.removeCard(card);
+      }
+    }
+    return true;
+  }
+  removeValue(value) {
+    if (!value) return false;
+    if (this.cards.length === 0) return true;
+
+    for (card of this.cards){
+      if (card.value === value){
+        this.removeCard(card);
+      }
+    }
+    return true;
+  }
+
   clear() {
     this.cards = [];
     return true;

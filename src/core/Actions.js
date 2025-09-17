@@ -9,7 +9,6 @@ const Actions = {
     const deck = game.deck;
     const phase = game.phase;
     const ui = game.ui;
-    const playField = game.playField;
     
     switch (choice) {
       case "1": {
@@ -17,6 +16,7 @@ const Actions = {
           "place",
           ui,
           player,
+          opponent,
           player
         );
         //if (!Validator.placeExists(player, handCardIndex, caravanIndex, phase)) return false;
@@ -35,17 +35,19 @@ const Actions = {
           "attach",
           ui,
           player,
+          opponent,
           targetPlayer
         );
         
         if (!Validator.canAttach(actionChoice, phase)) return false;
-        return Placement.attach(actionChoice, playField);
+        return Placement.attach(actionChoice);
       }
       case "3": {
         let actionChoice = await promptActionChoice(
           "discardCaravan",
           ui,
           player,
+          opponent,
           opponent
         );
         
@@ -57,6 +59,7 @@ const Actions = {
           "discardHand",
           ui,
           player,
+          opponent,
           opponent
         );
 
@@ -69,7 +72,7 @@ const Actions = {
     }
   }
 };
-async function promptActionChoice(actionType, ui, player, targetPlayer) {
+async function promptActionChoice(actionType, ui, player, opponent, targetPlayer) {
   let handCardIndex = null;
   let caravanIndex = null;
   let targetCardIndex = null;
@@ -92,6 +95,7 @@ async function promptActionChoice(actionType, ui, player, targetPlayer) {
   return new ActionChoice({
     type: actionType,
     player,
+    opponent,
     targetPlayer,
     handCardIndex,
     caravanIndex,

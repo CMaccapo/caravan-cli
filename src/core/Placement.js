@@ -13,7 +13,7 @@ const Placement = {
     return true;
   },
 
-  attach(actionChoice, playField) {
+  attach(actionChoice) {
     const card = actionChoice.player.hand[actionChoice.handCardIndex];
     const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
     const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
@@ -21,7 +21,7 @@ const Placement = {
     targetCard.attachCard(card);
     actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
     
-    return FaceCardRules[card.value](targetCaravan, targetCard, card, playField);
+    return FaceCardRules[card.value](actionChoice, card);
   },
 
   discardCaravan(player, caravanIndex) {

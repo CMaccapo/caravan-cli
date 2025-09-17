@@ -128,11 +128,13 @@ describe("Card Attachments", () => {
       new Card("6", "♦", "numeric"),
       new Card("Q", "♣", "special"), 
       new Card("J", "♥", "special"),
-      new Card("K", "♥", "special")
+      new Card("K", "♥", "special"),
+      new Card("Jo", "", "special"),
+      new Card("A", "♣", "numeric")
     ];
 
     p1.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
-    p2.caravans[caravanIndex].cards = [new Card("5", "♥", "numeric")];
+    p2.caravans[caravanIndex].cards = [new Card("5", "♣", "numeric")];
 
     ui = new SilentUI();
     game = new Game([p1, p2], deck, ui);
@@ -206,6 +208,30 @@ describe("Card Attachments", () => {
       
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].direction).toBe("desc");
+    });
+    test("Joker removes all with same suit as target Ace", async () => {
+      p1.caravans[caravanIndex].cards.push(p1.hand[5]);
+
+      playIndex = 4;
+      baseIndex = 1;
+      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("2", game);
+      
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+      expect(p2.caravans[caravanIndex].cards.length).toBe(0);
+    });
+    test("Joker removes all 5", async () => {
+      playIndex = 4;
+      baseIndex = 0;
+
+      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("2", game);
+
+      
+      expect(success).toBe(true);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(0);
+      expect(p2.caravans[caravanIndex].cards.length).toBe(0);
     });
   });
 });

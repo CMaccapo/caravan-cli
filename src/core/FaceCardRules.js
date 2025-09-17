@@ -1,19 +1,51 @@
 const FaceCardRules = {
-  "J": (caravan, targetCard, playedCard) => {
-    return caravan.removeCard(targetCard);
+  "J": (actionChoice) => {
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
+
+    return targetCaravan.removeCard(targetCard);
   },
-  "Q": (caravan, targetCard, playedCard) => {
-    return caravan.reverseDirection() && caravan.setSuit(playedCard.suit);
+  "Q": (actionChoice, playedCard) => {
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+
+    return targetCaravan.reverseDirection() && targetCaravan.setSuit(playedCard.suit);
   },
-  "K": (caravan, targetCard, playedCard) => {
+  "K": (actionChoice) => {
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
+
     return targetCard.doublePoints();
   },
-  "?": (caravan, targetCard, playedCard, playField) => {
+  "Jo": (actionChoice) => {
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
+    const players = [actionChoice.player, actionChoice.opponent]
+
     if (targetCard.value === "A"){
-      return playField.removeAllSuit(targetCard.suit);
+      return removeCardsWithSuit(players, targetCard)
     }
-    return playField.removeAllValue(targetCard.value);
+    return removeCardsWithValue(players, targetCard)
   }
 };
+function removeCardsWithSuit(players, targetCard) {
+  for (const player of players) {
+    for (const caravan of player.caravans) {
+      if (!caravan.removeSuit(targetCard.suit)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function removeCardsWithValue(players, targetCard) {
+  for (const player of players) {
+    for (const caravan of player.caravans) {
+      if (!caravan.removeValue(targetCard.value)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 module.exports = FaceCardRules;
