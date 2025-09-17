@@ -1,13 +1,9 @@
 const Validator = {
-  placeExists(player, cardIndex, caravanIndex){
-    const card = player.hand[cardIndex];
-    const caravan = player.caravans[caravanIndex];
-    if (!card || !caravan) return false;
-    return true;
-  },
   canPlace(actionChoice, phase) {
     const card = actionChoice.player.hand[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    
+    if (!card || !caravan) return false;
     
     if (card.type !== "numeric") return false;
     if (phase === "pregame") {
@@ -23,10 +19,13 @@ const Validator = {
     return true;
   },
   canAttach(actionChoice, phase){
+    if (!actionChoice.player || !actionChoice.targetPlayer) return false;
     const card = actionChoice.player.hand[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
-
     if (!card || !caravan) return false;
+
+    const baseCard = caravan.cards[actionChoice.targetCardIndex];
+    if (!baseCard) return false;
 
     if (card.type !== "special") return false;
     if (phase === "pregame") return false;

@@ -19,7 +19,6 @@ const Actions = {
           opponent,
           player
         );
-        //if (!Validator.placeExists(player, handCardIndex, caravanIndex, phase)) return false;
         if (!Validator.canPlace(actionChoice, phase)) return false;
         return Placement.place(actionChoice);
       }
