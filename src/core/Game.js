@@ -39,7 +39,7 @@ class Game {
       }
 
       if (!success) {
-        this.ui.notify("Invalid action. Please try again.");
+        this.ui.notify("\nInvalid action. Please try again.");
       }
     }
 

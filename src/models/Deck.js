@@ -21,7 +21,7 @@ class Deck {
     this.shuffle();
   }
   addJoker(){
-    this.cards.push(new Card("?", null, "special"));
+    this.cards.push(new Card("Jo", "", "special"));
   }
   shuffle() {
     for (let i = this.cards.length - 1; i > 0; i--) {

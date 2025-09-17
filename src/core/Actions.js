@@ -13,49 +13,29 @@ const Actions = {
     
     switch (choice) {
       case "1": {
-        const handCardIndex = parseInt(await ui.ask("Choose card index from hand: "), 10);
-        const caravanIndex = parseInt(await ui.ask("Choose caravan index (0-2): "), 10);
-
-        if (!Validator.placeExists(player, handCardIndex, caravanIndex, phase)) return false;
-
-        if (player.hand[handCardIndex].type == "numeric"){
-          let actionChoice = new ActionChoice({
-            type: "place",
-            player: player,
-            targetPlayer: player,
-            handCardIndex: handCardIndex,
-            caravanIndex: caravanIndex
-          });
-          if (!Validator.canPlace(actionChoice, phase)) return false;
-          return Placement.place(actionChoice);
-        }
-        else if (player.hand[handCardIndex].type === "special"){
-          const attachToIndex = await getAttachToIndex(
-            ui,
-            player, 
-            caravanIndex,
-            player.hand[handCardIndex].value
-          ) 
-          let actionChoice = new ActionChoice({
-            type: "attach",
-            player: player,
-            targetPlayer: player,
-            handCardIndex: handCardIndex,
-            caravanIndex: caravanIndex,
-            targetCardIndex: attachToIndex
-          });
-          if (!Validator.canAttach(actionChoice, phase)) return false;
-          return Placement.attach(actionChoice, playField);
-        }
-        
-        return false;
+        let actionChoice = await promptActionChoice(
+          "place",
+          ui,
+          player,
+          player
+        );
+        //if (!Validator.placeExists(player, handCardIndex, caravanIndex, phase)) return false;
+        if (!Validator.canPlace(actionChoice, phase)) return false;
+        return Placement.place(actionChoice);
       }
       case "2": {   
+        let fieldIndex = await ui.ask("Field: Yourself[0] Opponent[1]: ");
+        fieldIndex = parseInt(fieldIndex, 10);
+        let targetPlayer;
+
+        if (fieldIndex == 0) targetPlayer = player;
+        if (fieldIndex == 1) targetPlayer = opponent;
+
         let actionChoice = await promptActionChoice(
           "attach",
           ui,
           player,
-          opponent
+          targetPlayer
         );
         
         if (!Validator.canAttach(actionChoice, phase)) return false;
@@ -94,8 +74,7 @@ async function promptActionChoice(actionType, ui, player, targetPlayer) {
   let caravanIndex = null;
   let targetCardIndex = null;
 
-  const isPlacingOrAttaching = actionType === "place" || actionType === "attach" || actionType === "discardHand";
-  if (isPlacingOrAttaching) {
+  if (actionType !== "discardCaravan") {
     const handInput = await ui.ask("Choose card index from hand: ");
     handCardIndex = parseInt(handInput, 10);
   }
