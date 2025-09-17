@@ -122,7 +122,7 @@ describe("Card Attachments", () => {
     caravanIndex = 0;
     playIndex = 0;
     baseIndex = 0;
-    targetIndex = 0;
+    fieldIndex = 0;
 
     p1.hand = [
       new Card("6", "♦", "numeric"),
@@ -144,17 +144,17 @@ describe("Card Attachments", () => {
     test("Attach 1 Face Card to Self", async () => {
       playIndex = 1;
 
-      ui.pushInputs([targetIndex,playIndex, caravanIndex, baseIndex]);
-      const success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex , baseIndex]);
+      const success = await Actions.execute("1", game);
 
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
     });
     test("Attach 1 Face Card to Opponent", async () => {
       playIndex = 1;
-      targetIndex = 1;
-      ui.pushInputs([targetIndex,playIndex, caravanIndex, baseIndex]);
-      const success = await Actions.execute("2", game);
+      fieldIndex = 1;
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      const success = await Actions.execute("1", game);
 
       expect(success).toBe(true);
       expect(p2.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
@@ -165,17 +165,17 @@ describe("Card Attachments", () => {
 
       p1.caravans[caravanIndex].cards.push(p1.hand[0]);
 
-      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
-      success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", game);
 
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
     });
     test("Jack Removes Card - Opponent", async () => {
       playIndex = 2;
-      targetIndex = 1;
-      ui.pushInputs([targetIndex, playIndex, caravanIndex,baseIndex]);
-      const success = await Actions.execute("2", game);
+      fieldIndex = 1;
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex,baseIndex]);
+      const success = await Actions.execute("1", game);
 
       expect(success).toBe(true);
       expect(p2.caravans[caravanIndex].cards.length).toBe(0);
@@ -183,16 +183,16 @@ describe("Card Attachments", () => {
     test("King Doubles Card - Self", async () => {
       playIndex = 3;
       
-      ui.pushInputs([targetIndex, playIndex, caravanIndex,baseIndex]);
-      const success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex,baseIndex]);
+      const success = await Actions.execute("1", game);
 
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards[baseIndex].points).toBe(10);
     });
     test("Queen changes suit", async () => {
       playIndex = 1;
-      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
-      success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", game);
       
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].suit).toBe("♣");
@@ -203,8 +203,8 @@ describe("Card Attachments", () => {
       expect(p1.caravans[caravanIndex].direction).toBe("asc");
 
       baseIndex = 1;
-      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
-      success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", game);
       
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].direction).toBe("desc");
@@ -214,8 +214,8 @@ describe("Card Attachments", () => {
 
       playIndex = 4;
       baseIndex = 1;
-      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
-      success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", game);
       
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards.length).toBe(1);
@@ -225,13 +225,46 @@ describe("Card Attachments", () => {
       playIndex = 4;
       baseIndex = 0;
 
-      ui.pushInputs([targetIndex, playIndex, caravanIndex, baseIndex]);
-      success = await Actions.execute("2", game);
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
+      success = await Actions.execute("1", game);
 
       
       expect(success).toBe(true);
       expect(p1.caravans[caravanIndex].cards.length).toBe(0);
       expect(p2.caravans[caravanIndex].cards.length).toBe(0);
+    });
+  });
+  describe("Cards Sad", () => {
+    test("Attach 1 Face Card Invalid", async () => {
+      playIndex = 1;
+
+      ui.pushInputs([playIndex, fieldIndex, caravanIndex, "11"]);
+      const success = await Actions.execute("1", game);
+
+      expect(success).toBe(false);
+    });
+    test("Attach Invalid", async () => {
+      ui.pushInputs(["11", fieldIndex, caravanIndex, baseIndex]);
+      const success = await Actions.execute("1", game);
+
+      expect(success).toBe(false);
+      expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(0);
+    });
+    test("Place Invalid", async () => {
+      playIndex = 11;
+
+      ui.pushInputs([playIndex, caravanIndex]);
+      const success = await Actions.execute("1", game);
+
+      expect(success).toBe(false);
+      expect(p1.caravans[caravanIndex].cards.length).toBe(1);
+    });
+    test("Place card to invalid", async () => {
+      caravanIndex = 11;
+      ui.pushInputs([playIndex, caravanIndex]);
+      const success = await Actions.execute("2", game);
+
+      expect(success).toBe(false);
     });
   });
 });

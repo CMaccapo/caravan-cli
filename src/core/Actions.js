@@ -30,25 +30,6 @@ const Actions = {
           return Placement.attach(actionChoice);
         }
       }
-      case "2": {   
-        let fieldIndex = await ui.ask("Field: Yourself[0] Opponent[1]: ");
-        fieldIndex = parseInt(fieldIndex, 10);
-        let targetPlayer;
-
-        if (fieldIndex == 0) targetPlayer = player;
-        if (fieldIndex == 1) targetPlayer = opponent;
-
-        let actionChoice = await promptActionChoice(
-          "attach",
-          ui,
-          player,
-          opponent,
-          targetPlayer
-        );
-        if (actionChoice === false) return false;
-        if (!Validator.canAttach(actionChoice, phase)) return false;
-        return Placement.attach(actionChoice);
-      }
       case "3": {
         let actionChoice = await promptActionChoice(
           "discardCaravan",
@@ -83,6 +64,7 @@ async function promptActionChoice(actionType, ui, player, opponent) {
   let handCardIndex = null;
   let caravanIndex = null;
   let targetCardIndex = null;
+  let targetPlayer = null;
 
   if (!player) return false;
   //choose card index
@@ -101,9 +83,11 @@ async function promptActionChoice(actionType, ui, player, opponent) {
     if (fieldIndex == 1) targetPlayer = opponent;
     if (!targetPlayer) return false;
   }
+  else if (actionType.includes("place")){
+    targetPlayer = player;
+  }
   //choose caravan
   if (actionType !== "discardHand") {
-    targetPlayer = player;
     const caravanInput = await ui.ask("Choose caravan index (0-2): ");
     caravanIndex = parseInt(caravanInput, 10);
     if (!targetPlayer.caravans[caravanIndex]) return false;
