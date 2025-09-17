@@ -16,21 +16,21 @@ class ConsoleUI {
 
   async askAction(player) {
     console.log(`${player.name}'s turn.`);
-    console.log("1) Place card in your field");
-    console.log("2) Place card in opponent's field");
+    console.log("1) Place a number card in your field");
+    console.log("2) Attach a face card");
     console.log("3) Clear a caravan");
     console.log("4) Discard one card from hand");
     return await this.ask("Choose action: ");
   }
 
-  printState(players, deck) {
+  printState(players, deck) { 
     console.log("\n=== GAME STATE ===");
     players.forEach((p) => {
       console.log(`\n${p.name}`);
       console.log("Hand:", p.handToString());
       console.log(`${p.name}'s caravans:`);
       p.caravans.forEach((caravan, index) => {
-        console.log(`  Caravan ${index}: [${caravan.cards.join(", ")}]`);
+        console.log(`  Caravan ${index}: [${caravan.toString()}]`);
       });
     });
     console.log(`\nDeck: ${deck.count} cards left`);

@@ -6,13 +6,14 @@ class Game {
     this.players = players;
     this.deck = deck;
     this.ui = ui;
-    this.current = 0;
+    this.currentPlayer = players[0];
+    this.otherPlayer = players[1];
     this.phase = "pregame"; // "pregame" | "main"
   }
 
   async takeTurn(maxAttempts = 10) {
-    const player = this.players[this.current];
-    const opponent = this.players[(this.current + 1) % this.players.length];
+    const player = this.currentPlayer;
+    const opponent = this.otherPlayer;
 
     this.ui.currentPlayer = player;
     this.ui.currentOpponent = opponent;
@@ -29,14 +30,14 @@ class Game {
 
       if (this.phase === "pregame") {
         this.ui.notify(`${player.name}'s pregame turn.`);
-        success = await Actions.execute("1", player, opponent, this.deck, this.ui, this.phase);
+        success = await Actions.execute("1",this);
       } else {
         const choice = await this.ui.askAction(player);
-        success = await Actions.execute(choice, player, opponent, this.deck, this.ui, this.phase);
+        success = await Actions.execute(choice, this);
       }
 
       if (!success) {
-        this.ui.notify("Invalid action. Please try again.");
+        this.ui.notify("\nInvalid action. Please try again.");
       }
     }
 
@@ -44,7 +45,12 @@ class Game {
     if (this.pregameIsOver()) {
       this.switchPhase();
     }
-    this.current = (this.current + 1) % this.players.length;
+    this.switchPlayers();
+  }
+
+  switchPlayers(){ 
+    this.currentPlayer = this.players.find(player => player !== this.currentPlayer);
+    this.otherPlayer = this.players.find(player => player !== this.currentPlayer);
   }
 
   pregameIsOver(){

@@ -1,3 +1,5 @@
+const FaceCardRules = require("./FaceCardRules");
+
 const Placement = {
   pregamePlace(player, cardIndex, caravanIndex){
     player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
@@ -5,28 +7,29 @@ const Placement = {
     return true;
   },
 
-  placeOnOwn(player, cardIndex, caravanIndex) {
-    if (!player.hand[cardIndex] || !player.caravans[caravanIndex]) return false;
-    player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
-    player.hand.splice(cardIndex, 1);
+  place(actionChoice) {
+    actionChoice.targetPlayer.caravans[actionChoice.caravanIndex].addCard(actionChoice.player.hand[actionChoice.handCardIndex]);
+    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
     return true;
   },
 
-  placeOnOpponent(actor, cardIndex, opponent, caravanIndex) {
-    if (!actor.hand[cardIndex] || !opponent.caravans[caravanIndex]) return false;
-    opponent.caravans[caravanIndex].addCard(actor.hand[cardIndex]);
-    actor.hand.splice(cardIndex, 1);
-    return true;
+  attach(actionChoice) {
+    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
+    const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
+    
+    targetCard.attachCard(card);
+    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
+    
+    return FaceCardRules[card.value](actionChoice, card);
   },
 
   discardCaravan(player, caravanIndex) {
-    if (!player.caravans[caravanIndex]) return false;
     player.caravans[caravanIndex].clear();
     return true;
   },
 
   discardHandCard(player, cardIndex) {
-    if (!player.hand[cardIndex]) return false;
     player.hand.splice(cardIndex, 1);
     return true;
   }

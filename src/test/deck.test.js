@@ -1,28 +1,28 @@
 const Deck = require("../models/Deck");
 
 describe("Deck - expected behavior", () => {
-  test("deck starts with 52 cards", () => {
-    const d = new Deck();
-    expect(d.count).toBe(52);
+  test("deck starts with 54 cards", () => {
+    const deck = new Deck();
+    expect(deck.cards.length).toBe(54);
   });
 
   test("draw reduces deck size", () => {
-    const d = new Deck();
-    d.draw();
-    expect(d.count).toBe(51);
+    const deck = new Deck();
+    deck.draw();
+    expect(deck.count).toBe(53);
   });
 });
 
 describe("Deck - edge cases / unexpected behavior", () => {
   test("drawing from empty deck returns undefined", () => {
-    const d = new Deck();
-    d.cards = [];
-    expect(d.draw()).toBeUndefined();
+    const deck = new Deck();
+    deck.cards = [];
+    expect(deck.draw()).toBeUndefined();
   });
 
   test("shuffle on empty deck does not throw", () => {
-    const d = new Deck();
-    d.cards = [];
-    expect(() => d.shuffle()).not.toThrow();
+    const deck = new Deck();
+    deck.cards = [];
+    expect(() => deck.shuffle()).not.toThrow();
   });
 });
