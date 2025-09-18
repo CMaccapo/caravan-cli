@@ -4,6 +4,11 @@ class Caravan {
     this.direction = null;
     this.suit = null;
   }
+  get cardsStr() {
+    return (this._cards || [])
+      .map((card, index) => `[${index}]${card ? card.toString() : ""}`)
+      .join(" ");
+  }
 
   get cards() {
     return this._cards;

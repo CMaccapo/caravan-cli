@@ -10,6 +10,11 @@ class Player {
       this.draw(deck);
     }
   }
+  get caravansStr() {
+    return (this.caravans || [])
+      .map((caravan, index) => `[${index}]${caravan ? caravan.toString() : "[]"}`)
+      .join(" ");
+  }
 
   draw(deck) {
     if (deck.count > 0) {
@@ -27,5 +32,6 @@ class Player {
     return result;
   }
 }
+
 
 module.exports = Player;

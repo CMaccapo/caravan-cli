@@ -140,7 +140,7 @@ async function chooseField(actionType, ui){
 
 async function chooseCaravan(actionType, targetPlayer, ui) {
     if (actionType === "discardHand") return false;
-    const caravanIndex = await chooseIndex([0,1,2], "Caravans", ui);
+    const caravanIndex = await chooseIndex(targetPlayer.caravansStr, "Caravans", ui);
     if (!targetPlayer.caravans[caravanIndex]) return false;
     return caravanIndex;
   }
@@ -153,7 +153,7 @@ async function chooseTargetCard(actionType, player, targetPlayer, handCardIndex,
     if (handCardValue === "Q") {
       targetCardIndex = targetPlayer.caravans[caravanIndex].cards.length - 1;
     } else {
-      targetCardIndex = await chooseIndex(targetPlayer.caravans[caravanIndex].cards, "Cards", ui);
+      targetCardIndex = await chooseIndex(targetPlayer.caravans[caravanIndex].cardsStr, "Cards", ui);
     }
     if (!targetPlayer.caravans[caravanIndex].cards[targetCardIndex]) return false;
     return targetCardIndex;
