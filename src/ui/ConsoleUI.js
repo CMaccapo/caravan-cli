@@ -17,8 +17,8 @@ class ConsoleUI {
   async askAction(player) {
     console.log(`${player.name}'s turn.`);
     console.log("1) Place a card");
+    console.log("2) Discard one card from hand");
     console.log("3) Clear a caravan");
-    console.log("4) Discard one card from hand");
     return await this.ask("Choose action: ");
   }
 

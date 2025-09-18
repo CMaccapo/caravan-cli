@@ -30,6 +30,18 @@ const Actions = {
           return Placement.attach(actionChoice);
         }
       }
+      case "2": {
+        let actionChoice = await promptActionChoice(
+          "discardHand",
+          ui,
+          player,
+          opponent,
+          opponent
+        );
+        if (actionChoice === false) return false;
+        if (!Validator.canDiscardHandCard(player, actionChoice.handCardIndex)) return false;
+        return Placement.discardHandCard(player, actionChoice.handCardIndex);
+      }
       case "3": {
         let actionChoice = await promptActionChoice(
           "discardCaravan",
@@ -41,18 +53,6 @@ const Actions = {
         if (actionChoice === false) return false;
         if (!Validator.canDiscardCaravan(player, actionChoice.caravanIndex)) return false;
         return Placement.discardCaravan(player, actionChoice.caravanIndex);
-      }
-      case "4": {
-        let actionChoice = await promptActionChoice(
-          "discardHand",
-          ui,
-          player,
-          opponent,
-          opponent
-        );
-        if (actionChoice === false) return false;
-        if (!Validator.canDiscardHandCard(player, actionChoice.handCardIndex)) return false;
-        return Placement.discardHandCard(player, actionChoice.handCardIndex);
       }
 
       default:
