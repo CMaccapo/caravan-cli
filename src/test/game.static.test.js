@@ -231,7 +231,7 @@ describe("Card Attachments", () => {
     });
   });
 
-  describe("Cards Sad", () => {
+  describe("Cards", () => {
     const cases = [
       {
         name: "Attach 1 Face Card Invalid Card",
@@ -272,6 +272,38 @@ describe("Card Attachments", () => {
         expectSuccess: false,
         verify: () => {}, // nothing changes
       },
+      {
+        name: "Clear Valid",
+        inputs: ["0"],
+        choice: "3",
+        expectSuccess: true,
+        verify: (p1, caravanIndex) => {
+          expect(p1.caravans[caravanIndex].cards.length).toBe(0);
+        },
+      },
+      {
+        name: "Clear Invalid",
+        inputs: ["11"],
+        choice: "3",
+        expectSuccess: false,
+        verify: () => {},
+      },
+      {
+        name: "Discard Valid",
+        inputs: ["0"],
+        choice: "2",
+        expectSuccess: true,
+        verify: (p1, caravanIndex) => {
+          expect(p1.hand.cards[0]).toEqual({"attachments": [], "points": 0, "suit": "♣", "type": "special", "value": "Q"});
+        },
+      },
+      {
+        name: "Discard Invalid",
+        inputs: ["11"],
+        choice: "2",
+        expectSuccess: false,
+        verify: () => {},
+      }
     ];
 
     test.each(cases)("$name", async ({ inputs, expectSuccess, verify, choice = "1" }) => {

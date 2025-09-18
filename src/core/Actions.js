@@ -30,26 +30,18 @@ const Actions = {
         }
       }
       case "2": {
-        let actionChoice = await promptActionChoice(
-          "discardHand",
-          ui,
-          player,
-          opponent,
-        );
-        if (actionChoice === false) return false;
-        if (!Validator.canDiscardHandCard(player, actionChoice.handCardIndex)) return false;
-        return Placement.discardHandCard(player, actionChoice.handCardIndex);
+        let handCardIndex = await chooseIndex(player.hand, "Hand", ui);
+        if (!player.hand.cards[handCardIndex]) return false;
+        
+        if (!Validator.canDiscardHandCard(player, handCardIndex)) return false;
+        return Placement.discardHandCard(player, handCardIndex);
       }
       case "3": {
-        let actionChoice = await promptActionChoice(
-          "discardCaravan",
-          ui,
-          player,
-          opponent,
-        );
-        if (actionChoice === false) return false;
-        if (!Validator.canDiscardCaravan(player, actionChoice.caravanIndex)) return false;
-        return Placement.discardCaravan(player, actionChoice.caravanIndex);
+        let caravanIndex = await chooseCaravan("discardCaravan", player, ui);
+        if (!player.caravans[caravanIndex]) return false;
+
+        if (!Validator.canDiscardCaravan(player, caravanIndex)) return false;
+        return Placement.discardCaravan(player, caravanIndex);
       }
 
       default:
@@ -64,16 +56,11 @@ async function promptActionChoice(actionType, ui, player, opponent) {
 
   if (!player) return false;
 
-  handCardIndex = await chooseHandCard(actionType, player, ui);
+  handCardIndex = await chooseIndex(player.hand, "Hand", ui);
   if (!player.hand.cards[handCardIndex]) return false;
 
   actionType = setPlaceType(actionType, player.hand.cards[handCardIndex].type);
   if ((actionType) === false) return false;
-  
-  async function chooseHandCard(actionType, player, ui){
-    if (actionType === "discardCaravan") return false;
-    return await chooseIndex(player.hand, "Hand", ui);
-  }
   
   fieldIndex = await chooseField(actionType, ui);
   if (fieldIndex === false) return false;
