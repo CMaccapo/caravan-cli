@@ -4,6 +4,7 @@ const Hand = require("./Hand");
 class Player {
   constructor(name, deck, caravanCount=3) {
     this.name = name;
+    this.opponent = null;
     this.hand = new Hand();
     this.caravans = Array.from({ length: caravanCount }, () => new Caravan());
     for (let i = 0; i < 8; i++) {
@@ -12,7 +13,14 @@ class Player {
   }
   get caravansStr() {
     return (this.caravans || [])
-      .map((caravan, index) => `\n${caravan.getPoints()}pts\t[${index}]${caravan.dirStr}${caravan.suitStr}: ${caravan ? caravan.toString() : "[]"}`)
+      .map((caravan, index) => {
+        if (!caravan) return `\n[${index}] []`; // empty slot
+
+        const isSelling = this.caravanIsSelling(index);
+        const dollar = isSelling ? "$" : " ";
+
+        return `\n${dollar}${caravan.points}pts\t[${index}]${caravan.suitStr}${caravan.dirStr}: ${caravan.toString()}`;
+      })
       .join(" ");
   }
 
@@ -30,6 +38,16 @@ class Player {
       }
     });
     return result;
+  }
+
+  caravanIsSelling(index) {
+    const myCaravan = this.caravans[index];
+    const oppCaravan = this.opponent.caravans[index];
+
+    if (!myCaravan || !myCaravan.isSellable()) return false;
+    if (!oppCaravan || !oppCaravan.isSellable()) return true;
+
+    return myCaravan.points > oppCaravan.points;
   }
 }
 

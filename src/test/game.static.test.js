@@ -26,18 +26,41 @@ class SilentUI {
 }
 
 describe("Game End", () => {
+  let deck, p1, p2, ui, game;
+  beforeEach(() => {
+    deck = new Deck();
+    p1 = new Player("P1", deck);
+    p2 = new Player("P2", deck);
+    ui = new SilentUI([]);
+    game = new Game([p1, p2], deck, ui);
+
+    p1.caravans[0].addCard(new Card("23", "♠", "numeric"));
+    p1.caravans[1].addCard(new Card("21", "♠", "numeric"));
+    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
+  });
   test("Caravan win", () => {
+    expect(game.getWinner()).toBe(p1);
+  });
+  test("Caravan win VS", () => {
+    p2.caravans[0].addCard(new Card("21", "♠", "numeric"));
+    p2.caravans[1].addCard(new Card("21", "♠", "numeric"));
+    p2.caravans[2].addCard(new Card("21", "♠", "numeric"));
+
+    expect(game.getWinner()).toBe(p1);
+  });
+  test("Tie no win", () => {
     const deck = new Deck();
     const p1 = new Player("P1", deck);
     const p2 = new Player("P2", deck);
     const ui = new SilentUI([]);
     const game = new Game([p1, p2], deck, ui);
 
-    p1.caravans[0].addCard(new Card("23", "♠", "numeric"));
-    p1.caravans[1].addCard(new Card("21", "♠", "numeric"));
-    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
+    p2.caravans[0].addCard(new Card("23", "♠", "numeric"));
+    p2.caravans[1].addCard(new Card("22", "♠", "numeric"));
+    p2.caravans[2].addCard(new Card("26", "♠", "numeric"));
 
-    expect(game.getWinner()).toBe(p1);
+    expect(game.getWinner()).toBe(null);
+    expect(game.isOver()).toBe(false);
   });
 });
 

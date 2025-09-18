@@ -12,10 +12,10 @@ class Caravan {
   get dirStr() {
     if (this.direction == "asc") return "↑";
     if (this.direction == "desc") return "↓";
-    return "";
+    return " ";
   }
   get suitStr() {
-    if (!this.suit) return "";
+    if (!this.suit) return " ";
     return this.suit;
   }
 
@@ -120,12 +120,12 @@ class Caravan {
     return this._cards.length;
   }
 
-  getPoints() {
+  get points() {
     return this._cards.reduce((sum, card) => sum + card.points, 0);
   }
 
   isSellable() {
-    const points = this.getPoints();
+    const points = this.points;
     return points >= 21 && points <= 26;
   }
 }

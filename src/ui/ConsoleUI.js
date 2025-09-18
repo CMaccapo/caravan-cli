@@ -28,9 +28,7 @@ class ConsoleUI {
       console.log(`\n${p.name}`);
       console.log("Hand:", p.hand.toString());
       console.log(`${p.name}'s caravans:`);
-      p.caravans.forEach((caravan, index) => {
-        console.log(`  Caravan ${index}: [${caravan.toString()}]`);
-      });
+      console.log(p.caravansStr);
     });
     console.log(`\nDeck: ${deck.count} cards left`);
     console.log("==================\n");
