@@ -26,7 +26,7 @@ class ConsoleUI {
     console.log("\n=== GAME STATE ===");
     players.forEach((p) => {
       console.log(`\n${p.name}`);
-      console.log("Hand:", p.handToString());
+      console.log("Hand:", p.hand.toString());
       console.log(`${p.name}'s caravans:`);
       p.caravans.forEach((caravan, index) => {
         console.log(`  Caravan ${index}: [${caravan.toString()}]`);

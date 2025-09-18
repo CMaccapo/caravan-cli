@@ -54,14 +54,14 @@ class Game {
   }
 
   pregameIsOver(){
-    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) return true;
+    if (this.phase === "pregame" && this.players.every(p => p.hand.cards.length <= 5)) return true;
   }
   switchPhase(){
     this.phase = "main";
     this.ui.notify("Pregame complete! Switching to main phase.");
   }
   drawIfNeeded(player){
-    if (player.hand.length < 5 && this.deck.count > 0) {
+    if (player.hand.cards.length < 5 && this.deck.count > 0) {
       player.draw(this.deck);
       this.ui.notify(`${player.name} draws a card.`);
     }

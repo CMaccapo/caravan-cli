@@ -50,7 +50,7 @@ describe("Direction", () => {
     p1 = new Player("P1", deck);
     p2 = new Player("P2", deck);
 
-    p1.hand = [
+    p1.hand.cards = [
       new Card("6", "♦", "numeric"),
       new Card("8", "♠", "numeric"), 
       new Card("2", "♥", "numeric"),
@@ -122,7 +122,7 @@ describe("Card Attachments", () => {
     p2 = new Player("P2", deck);
     caravanIndex = 0;
 
-    p1.hand = [
+    p1.hand.cards = [
       new Card("6", "♦", "numeric"),
       new Card("Q", "♣", "special"), 
       new Card("J", "♥", "special"),
@@ -160,7 +160,7 @@ describe("Card Attachments", () => {
       {
         name: "Attach 1 Face Card 2nd Pos Self",
         playIndex: 1, fieldIndex: 0, baseIndex: 1,
-        setup: (p1) => { p1.caravans[0].addCard(p1.hand[0]); },
+        setup: (p1) => { p1.caravans[0].addCard(p1.hand.cards[0]); },
         verify: (p1, p2, caravanIndex, baseIndex) => {
           expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(1);
         },
@@ -193,7 +193,7 @@ describe("Card Attachments", () => {
         name: "Queen reverses direction",
         playIndex: 1, fieldIndex: 0, baseIndex: 1,
         setup: (p1) => {
-          p1.caravans[0].addCard(p1.hand[0]); // add second card to trigger reverse
+          p1.caravans[0].addCard(p1.hand.cards[0]); // add second card to trigger reverse
           expect(p1.caravans[0].direction).toBe("asc");
         },
         verify: (p1) => {
@@ -204,7 +204,7 @@ describe("Card Attachments", () => {
         name: "Joker removes all with same suit as target Ace",
         playIndex: 4, fieldIndex: 0, baseIndex: 1,
         setup: (p1) => {
-          p1.caravans[0].addCard(p1.hand[5]); // add Ace
+          p1.caravans[0].addCard(p1.hand.cards[5]); // add Ace
         },
         verify: (p1, p2, caravanIndex) => {
           expect(p1.caravans[caravanIndex].cards.length).toBe(1);
@@ -234,16 +234,24 @@ describe("Card Attachments", () => {
   describe("Cards Sad", () => {
     const cases = [
       {
-        name: "Attach 1 Face Card Invalid",
-        inputs: [2, 0, 0, "11"], // invalid base index
+        name: "Attach 1 Face Card Invalid Card",
+        inputs: [1, 0, "11"], // invalid base index
         expectSuccess: false,
         verify: (p1, caravanIndex, baseIndex) => {
           expect(p1.caravans[caravanIndex].cards[0].attachments.length).toBe(0);
         },
       },
       {
-        name: "Attach Invalid",
-        inputs: ["11", 0, 0, 0], // invalid play index
+        name: "Attach Invalid Hand",
+        inputs: ["11", 0, 0], // invalid play index
+        expectSuccess: false,
+        verify: (p1, caravanIndex, baseIndex) => {
+          expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(0);
+        },
+      },
+      {
+        name: "Attach Invalid Caravan",
+        inputs: [0, "11", 0], // invalid play index
         expectSuccess: false,
         verify: (p1, caravanIndex, baseIndex) => {
           expect(p1.caravans[caravanIndex].cards[baseIndex].attachments.length).toBe(0);
@@ -259,8 +267,8 @@ describe("Card Attachments", () => {
       },
       {
         name: "Place card to invalid",
-        inputs: [0, 11], // invalid caravan index
-        choice: "2",
+        inputs: ["0", "11"], // invalid caravan index
+        choice: "1",
         expectSuccess: false,
         verify: () => {}, // nothing changes
       },

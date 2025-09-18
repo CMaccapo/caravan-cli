@@ -1,6 +1,6 @@
 const Validator = {
   canPlace(actionChoice, phase) {
-    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const card = actionChoice.player.hand.cards[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
     
     if (!card || !caravan) return false;
@@ -20,7 +20,7 @@ const Validator = {
   },
   canAttach(actionChoice, phase){
     if (!actionChoice.player || !actionChoice.targetPlayer) return false;
-    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const card = actionChoice.player.hand.cards[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
     if (!card || !caravan) return false;
 
@@ -39,7 +39,7 @@ const Validator = {
   },
 
   canDiscardHandCard(player, cardIndex) {
-    return !!player.hand[cardIndex];
+    return !!player.hand.cards[cardIndex];
   }
 };
 

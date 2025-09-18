@@ -1,9 +1,10 @@
 const Caravan = require("./Caravan");
+const Hand = require("./Hand");
 
 class Player {
   constructor(name, deck, caravanCount=3) {
     this.name = name;
-    this.hand = [];
+    this.hand = new Hand();
     this.caravans = Array.from({ length: caravanCount }, () => new Caravan());
     for (let i = 0; i < 8; i++) {
       this.draw(deck);
@@ -12,12 +13,8 @@ class Player {
 
   draw(deck) {
     if (deck.count > 0) {
-      this.hand.push(deck.draw());
+      this.hand.addCard(deck.draw());
     }
-  }
-
-  handToString() {
-    return this.hand.map((card, index) => `[${index}]${card}`).join(" ");
   }
 
   getNumSellableCaravans(){

@@ -70,8 +70,10 @@ async function promptActionChoice(actionType, ui, player, opponent) {
   //choose card index
   if (actionType !== "discardCaravan") {
     handCardIndex = await chooseIndex(player.hand, "Hand", ui);
-    if (!player.hand[handCardIndex]) return false;
-    if ((actionType = setType(player.hand[handCardIndex].type)) === false) return false;
+    if (!player.hand.cards[handCardIndex]) return false;
+    if (actionType !== "discardHand") {
+      if ((actionType = setType(player.hand.cards[handCardIndex].type)) === false) return false;
+    }
   }
   //choose field if attach
   if (actionType.includes("attach")) {
@@ -90,7 +92,7 @@ async function promptActionChoice(actionType, ui, player, opponent) {
   }
   //choose target card if attach
   if (actionType.includes("attach")) {
-    const handCardValue = player.hand[handCardIndex].value;
+    const handCardValue = player.hand.cards[handCardIndex].value;
 
     if (handCardValue === "Q") {
       targetCardIndex =  targetPlayer.caravans[caravanIndex].cards.length - 1;

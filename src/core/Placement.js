@@ -2,24 +2,24 @@ const FaceCardRules = require("./FaceCardRules");
 
 const Placement = {
   pregamePlace(player, cardIndex, caravanIndex){
-    player.caravans[caravanIndex].addCard(player.hand[cardIndex]);
-    player.hand.splice(cardIndex, 1);
+    player.caravans[caravanIndex].addCard(player.hand.cards[cardIndex]);
+    actionChoice.player.hand.removeCard(player.hand.cards[cardIndex]);
     return true;
   },
 
   place(actionChoice) {
-    actionChoice.targetPlayer.caravans[actionChoice.caravanIndex].addCard(actionChoice.player.hand[actionChoice.handCardIndex]);
-    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
+    actionChoice.targetPlayer.caravans[actionChoice.caravanIndex].addCard(actionChoice.player.hand.cards[actionChoice.handCardIndex]);
+    actionChoice.player.hand.removeCard(actionChoice.player.hand.cards[actionChoice.handCardIndex]);
     return true;
   },
 
   attach(actionChoice) {
-    const card = actionChoice.player.hand[actionChoice.handCardIndex];
+    const card = actionChoice.player.hand.cards[actionChoice.handCardIndex];
     const targetCaravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
     const targetCard = targetCaravan.cards[actionChoice.targetCardIndex];
     
     targetCard.attachCard(card);
-    actionChoice.player.hand.splice(actionChoice.handCardIndex, 1);
+    actionChoice.player.hand.removeCard(card);
     
     return FaceCardRules[card.value](actionChoice, card);
   },
@@ -30,7 +30,7 @@ const Placement = {
   },
 
   discardHandCard(player, cardIndex) {
-    player.hand.splice(cardIndex, 1);
+    player.hand.removeCard(player.hand.cards[cardIndex]);
     return true;
   }
 };
