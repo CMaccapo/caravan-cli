@@ -3,8 +3,8 @@ class ActionChoice {
     this.type = type; // "place", "attachOwn", "attachOpponent", "discardCaravan", "discardHand"
     this.player = player;
     this.opponent = opponent ?? null;
-    this.targetPlayer = targetPlayer;
     this.handCardIndex = handCardIndex ?? null;
+    this.targetPlayer = targetPlayer;
     this.caravanIndex = caravanIndex ?? null;
     this.targetCardIndex = targetCardIndex ?? null;
   }

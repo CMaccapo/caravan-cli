@@ -18,7 +18,6 @@ const Actions = {
           ui,
           player,
           opponent,
-          player
         );
         if (actionChoice === false) return false;
         if (actionChoice.type == "place"){
@@ -36,7 +35,6 @@ const Actions = {
           ui,
           player,
           opponent,
-          opponent
         );
         if (actionChoice === false) return false;
         if (!Validator.canDiscardHandCard(player, actionChoice.handCardIndex)) return false;
@@ -48,7 +46,6 @@ const Actions = {
           ui,
           player,
           opponent,
-          opponent
         );
         if (actionChoice === false) return false;
         if (!Validator.canDiscardCaravan(player, actionChoice.caravanIndex)) return false;
@@ -91,12 +88,12 @@ async function promptActionChoice(actionType, ui, player, opponent) {
 
   return new ActionChoice({
     type: actionType,
-    player,
-    opponent,
-    targetPlayer,
-    handCardIndex,
-    caravanIndex,
-    targetCardIndex
+    player: player,
+    opponent: opponent,
+    handCardIndex: handCardIndex,
+    targetPlayer: targetPlayer,
+    caravanIndex: caravanIndex,
+    targetCardIndex: targetCardIndex
   });
 }
 
