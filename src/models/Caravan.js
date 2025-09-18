@@ -4,10 +4,19 @@ class Caravan {
     this.direction = null;
     this.suit = null;
   }
-  get cardsStr() {
+  get cardsStr() { 
     return (this._cards || [])
       .map((card, index) => `[${index}]${card ? card.toString() : ""}`)
       .join(" ");
+  }
+  get dirStr() {
+    if (this.direction == "asc") return "↑";
+    if (this.direction == "desc") return "↓";
+    return "";
+  }
+  get suitStr() {
+    if (!this.suit) return "";
+    return this.suit;
   }
 
   get cards() {

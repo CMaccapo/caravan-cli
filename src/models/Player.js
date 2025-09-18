@@ -12,7 +12,7 @@ class Player {
   }
   get caravansStr() {
     return (this.caravans || [])
-      .map((caravan, index) => `[${index}]${caravan ? caravan.toString() : "[]"}`)
+      .map((caravan, index) => `\n${caravan.getPoints()}pts\t[${index}]${caravan.dirStr}${caravan.suitStr}: ${caravan ? caravan.toString() : "[]"}`)
       .join(" ");
   }
 
