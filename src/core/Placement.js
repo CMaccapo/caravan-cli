@@ -1,12 +1,6 @@
 const FaceCardRules = require("./FaceCardRules");
 
 const Placement = {
-  pregamePlace(player, cardIndex, caravanIndex){
-    player.caravans[caravanIndex].addCard(player.hand.cards[cardIndex]);
-    actionChoice.player.hand.removeCard(player.hand.cards[cardIndex]);
-    return true;
-  },
-
   place(actionChoice) {
     actionChoice.targetPlayer.caravans[actionChoice.caravanIndex].addCard(actionChoice.player.hand.cards[actionChoice.handCardIndex]);
     actionChoice.player.hand.removeCard(actionChoice.player.hand.cards[actionChoice.handCardIndex]);

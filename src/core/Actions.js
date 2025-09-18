@@ -61,46 +61,33 @@ const Actions = {
   }
 };
 async function promptActionChoice(actionType, ui, player, opponent) {
-  let handCardIndex = null;
-  let caravanIndex = null;
-  let targetCardIndex = null;
-  let targetPlayer = null;
+  let handCardIndex, caravanIndex, targetCardIndex;
+  let targetPlayer = player;
+  let fieldIndex = 0;
 
   if (!player) return false;
-  //choose card index
-  if (actionType !== "discardCaravan") {
-    handCardIndex = await chooseIndex(player.hand, "Hand", ui);
-    if (!player.hand.cards[handCardIndex]) return false;
-    if (actionType !== "discardHand") {
-      if ((actionType = setType(player.hand.cards[handCardIndex].type)) === false) return false;
-    }
-  }
-  //choose field if attach
-  if (actionType.includes("attach")) {
-    const fieldIndex = await chooseIndex(["Yourself[0]", "Opponent[1]"], "Field", ui);
 
-    targetPlayer = pickTargetPlayer(fieldIndex, player, opponent);
-    if (!targetPlayer) return false;
-  }
-  else if (actionType.includes("place")){
-    targetPlayer = player;
-  }
-  //choose caravan
-  if (actionType !== "discardHand") {
-    caravanIndex = await chooseIndex([0,1,2], "Caravans", ui);
-    if (!targetPlayer.caravans[caravanIndex]) return false;
-  }
-  //choose target card if attach
-  if (actionType.includes("attach")) {
-    const handCardValue = player.hand.cards[handCardIndex].value;
+  handCardIndex = await chooseHandCard(actionType, player, ui);
+  if (!player.hand.cards[handCardIndex]) return false;
 
-    if (handCardValue === "Q") {
-      targetCardIndex =  targetPlayer.caravans[caravanIndex].cards.length - 1;
-    } else {
-      targetCardIndex = await chooseIndex(targetPlayer.caravans[caravanIndex].cards, "Cards", ui);
-    }
-    if (!targetPlayer.caravans[caravanIndex].cards[targetCardIndex]) return false;
+  actionType = setPlaceType(actionType, player.hand.cards[handCardIndex].type);
+  if ((actionType) === false) return false;
+  
+  async function chooseHandCard(actionType, player, ui){
+    if (actionType === "discardCaravan") return false;
+    return await chooseIndex(player.hand, "Hand", ui);
   }
+  
+  fieldIndex = await chooseField(actionType, ui);
+  if (fieldIndex === false) return false;
+  
+  targetPlayer = pickTargetPlayer(actionType, fieldIndex, player, opponent);
+  if (!targetPlayer) return false;
+  
+  caravanIndex = await chooseCaravan(actionType, targetPlayer, ui);
+  if (!targetPlayer.caravans[caravanIndex]) return false;
+  
+  targetCardIndex = await chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui);
 
   return new ActionChoice({
     type: actionType,
@@ -113,22 +100,29 @@ async function promptActionChoice(actionType, ui, player, opponent) {
   });
 }
 
+
 async function chooseIndex(pickFrom, name, ui){
   const handInput = await ui.ask(`
     ${name}: ${pickFrom} 
     Choose index from ${name}: `);
   return parseInt(handInput, 10);
 }
-function pickTargetPlayer(fieldIndex, player, opponent){
-  switch(fieldIndex){
-    case 0: return player;
-    case 1: return opponent;
-    default: return false;
+
+function pickTargetPlayer(actionType, fieldIndex, player, opponent){
+  if(actionType=="attach"){
+    switch(fieldIndex){
+      case 0: return player;
+      case 1: return opponent;
+    }
   }
+  else if (actionType=="place") return player;
+  else if (actionType=="discardHand") return player;
+  else if (actionType=="discardCaravan") return player;
 }
 
-function setType(type){
+function setPlaceType(actionType, type){
   if (!type) return false;
+  if (actionType.includes("discard")) return false;
   switch (type) {
     case "numeric": {
       return "place";
@@ -138,6 +132,34 @@ function setType(type){
     }
     default:
       return null;
+  }
+}
+
+async function chooseField(actionType, ui){
+  if (actionType.includes("attach")) {
+    return await chooseIndex(["Yourself[0]", "Opponent[1]"], "Field", ui);
+  }
+}
+
+async function chooseCaravan(actionType, targetPlayer, ui) {
+    if (actionType === "discardHand") return false;
+    const caravanIndex = await chooseIndex([0,1,2], "Caravans", ui);
+    if (!targetPlayer.caravans[caravanIndex]) return false;
+    return caravanIndex;
+  }
+
+async function chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui){
+  if (actionType.includes("attach")) {
+    const handCardValue = player.hand.cards[handCardIndex].value;
+    let targetCardIndex;
+
+    if (handCardValue === "Q") {
+      targetCardIndex = targetPlayer.caravans[caravanIndex].cards.length - 1;
+    } else {
+      targetCardIndex = await chooseIndex(targetPlayer.caravans[caravanIndex].cards, "Cards", ui);
+    }
+    if (!targetPlayer.caravans[caravanIndex].cards[targetCardIndex]) return false;
+    return targetCardIndex;
   }
 }
 
