@@ -1,9 +1,9 @@
-const Card = require("../models/Card");
-const Deck = require("../models/Deck");
-const Player = require("../models/Player");
-const Game = require("../core/Game");
-const RuleCheck = require("../core/RuleCheck");
-const Actions = require("../core/Actions");
+const Card = require("../src/models/Card");
+const Deck = require("../src/models/Deck");
+const Player = require("../src/models/Player");
+const Game = require("../src/core/Game");
+const RuleCheck = require("../src/core/RuleCheck");
+const Actions = require("../src/core/Actions");
 
 class SilentUI {
   constructor(inputs = []) {
