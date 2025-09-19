@@ -5,7 +5,7 @@
     "bin/",
     "src/"
   ],
-  "bin":{
+  "bin": {
     "caravan": "./bin/caravan.js"
   },
   "type": "commonjs",
@@ -13,7 +13,12 @@
     "start": "node bin/caravan.js",
     "test": "jest"
   },
-  "keywords": ["card game", "caravan", "CLI", "nodejs"],
+  "keywords": [
+    "card game",
+    "caravan",
+    "CLI",
+    "nodejs"
+  ],
   "author": "CMaccapo",
   "license": "ISC",
   "description": "A command-line card game based on Caravan, playable in Node.js",
