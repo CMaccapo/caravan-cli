@@ -18,6 +18,7 @@ const Actions = {
           ui,
           player,
           opponent,
+          phase
         );
         if (actionChoice === false) return false;
         if (actionChoice.type == "place"){
@@ -49,7 +50,7 @@ const Actions = {
     }
   }
 };
-async function promptActionChoice(actionType, ui, player, opponent) {
+async function promptActionChoice(actionType, ui, player, opponent, phase) {
   let handCardIndex, caravanIndex, targetCardIndex;
   let targetPlayer = player;
   let fieldIndex = 0;
@@ -61,6 +62,7 @@ async function promptActionChoice(actionType, ui, player, opponent) {
 
   actionType = setPlaceType(actionType, player.hand.cards[handCardIndex].type);
   if ((actionType) === false) return false;
+  if (phase === "pregame" && actionType !== "place") return false
   
   fieldIndex = await chooseField(actionType, ui);
   if (fieldIndex === false) return false;
