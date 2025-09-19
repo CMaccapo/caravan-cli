@@ -1,9 +1,7 @@
-const Validator = {
+const RuleCheck = {
   canPlace(actionChoice, phase) {
     const card = actionChoice.player.hand.cards[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
-    
-    if (!card || !caravan) return false;
     
     if (card.type !== "numeric") return false;
     if (phase === "pregame") {
@@ -19,28 +17,14 @@ const Validator = {
     return true;
   },
   canAttach(actionChoice, phase){
-    if (!actionChoice.player || !actionChoice.targetPlayer) return false;
     const card = actionChoice.player.hand.cards[actionChoice.handCardIndex];
     const caravan = actionChoice.targetPlayer.caravans[actionChoice.caravanIndex];
-    if (!card || !caravan) return false;
-
-    const baseCard = caravan.cards[actionChoice.targetCardIndex];
-    if (!baseCard) return false;
 
     if (card.type !== "special") return false;
     if (phase === "pregame") return false;
 
     return true;
-  },
-
-  canDiscardCaravan(player, caravanIndex) {
-    const caravan = player.caravans[caravanIndex];
-    return !!caravan;
-  },
-
-  canDiscardHandCard(player, cardIndex) {
-    return !!player.hand.cards[cardIndex];
   }
 };
 
-module.exports = Validator;
+module.exports = RuleCheck;

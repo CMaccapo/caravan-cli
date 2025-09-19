@@ -1,5 +1,5 @@
 const Placement = require("./Placement");
-const Validator = require("./Validator");
+const RuleCheck = require("./RuleCheck");
 const ActionChoice = require("../models/ActionChoice");
 
 const Actions = {
@@ -22,11 +22,10 @@ const Actions = {
         );
         if (actionChoice === false) return false;
         if (actionChoice.type == "place"){
-          if (!Validator.canPlace(actionChoice, phase)) return false;
+          if (!RuleCheck.canPlace(actionChoice, phase)) return false;
           return Placement.place(actionChoice);
         }
         if (actionChoice.type == "attach"){
-          if (!Validator.canAttach(actionChoice, phase)) return false;
           return Placement.attach(actionChoice);
         }
       }
@@ -34,14 +33,12 @@ const Actions = {
         let handCardIndex = await chooseIndex(player.hand, "Hand", ui);
         if (!player.hand.cards[handCardIndex]) return false;
         
-        if (!Validator.canDiscardHandCard(player, handCardIndex)) return false;
         return Placement.discardHandCard(player, handCardIndex);
       }
       case "3": {
         let caravanIndex = await chooseCaravan("discardCaravan", player, ui);
         if (!player.caravans[caravanIndex]) return false;
 
-        if (!Validator.canDiscardCaravan(player, caravanIndex)) return false;
         return Placement.discardCaravan(player, caravanIndex);
       }
 
@@ -91,7 +88,12 @@ async function chooseIndex(pickFrom, name, ui){
   const handInput = await ui.ask(`
     ${name}: ${pickFrom} 
     Choose index from ${name}: `);
-  return parseInt(handInput, 10);
+
+  const index = parseInt(handInput, 10);
+  if (Number.isNaN(index) || index < 0 || index >= pickFrom.length) {
+    return false;
+  }
+  return index;
 }
 
 function pickTargetPlayer(actionType, fieldIndex, player, opponent){

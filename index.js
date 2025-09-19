@@ -19,7 +19,7 @@ async function main() {
   while (!game.isOver()) {
     await game.takeTurn();
   }
-  ui.notify("Winner: ${game.getWinner()}");
+  ui.notify(`Winner: ${game.getWinner().name}`);
   ui.notify("Game over!");
   ui.close();
 }

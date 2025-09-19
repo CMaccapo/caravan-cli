@@ -2,7 +2,7 @@ const Card = require("../models/Card");
 const Deck = require("../models/Deck");
 const Player = require("../models/Player");
 const Game = require("../core/Game");
-const Validator = require("../core/Validator");
+const RuleCheck = require("../core/RuleCheck");
 const Actions = require("../core/Actions");
 
 class SilentUI {
