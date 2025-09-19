@@ -2,6 +2,8 @@
 
 A command-line version of the card game Caravan fom Fallout New Vegas, playable in Node.js.
 
+- 2-player local-play
+
 ## Requirements
 
 - Node.js (v18+ recommended)
@@ -20,7 +22,7 @@ A command-line version of the card game Caravan fom Fallout New Vegas, playable 
 #### Global
 
 3. Install: ```npm install -g```
-4. Add npm prefix -g to PATH
+4. Add ```npm prefix -g``` to PATH
 5. Run: ```caravan```
 
 ### Uninstall
