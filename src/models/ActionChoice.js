@@ -1,12 +1,13 @@
 class ActionChoice {
-  constructor({ type, player, opponent, targetPlayer, handCardIndex, caravanIndex, targetCardIndex }) {
-    this.type = type; // "place", "attachOwn", "attachOpponent", "discardCaravan", "discardHand"
+  constructor({ type, player, opponent, phase, handCardIndex, targetPlayer, caravanIndex, targetCardIndex }) {
+    this.type = type; // "place", "attach", "discardCaravan", "discardHand"
     this.player = player;
-    this.opponent = opponent ?? null;
+    this.opponent = opponent;
+    this.handCardIndex = handCardIndex;
+    this.phase = phase;
     this.targetPlayer = targetPlayer;
-    this.handCardIndex = handCardIndex ?? null;
-    this.caravanIndex = caravanIndex ?? null;
-    this.targetCardIndex = targetCardIndex ?? null;
+    this.caravanIndex = caravanIndex;
+    this.targetCardIndex = targetCardIndex;
   }
 }
 

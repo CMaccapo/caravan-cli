@@ -1,9 +1,10 @@
-const Card = require("./src/models/Card");
-const Deck = require("./src/models/Deck");
-const Player = require("./src/models/Player");
+#!/usr/bin/env node
+const Card = require("../src/models/Card");
+const Deck = require("../src/models/Deck");
+const Player = require("../src/models/Player");
 
-const Game = require("./src/core/Game");
-const ConsoleUI = require("./src/ui/ConsoleUI");
+const Game = require("../src/core/Game");
+const ConsoleUI = require("../src/ui/ConsoleUI");
 
 async function main() {
   const deck = new Deck();
@@ -19,7 +20,7 @@ async function main() {
   while (!game.isOver()) {
     await game.takeTurn();
   }
-  ui.notify("Winner: ${game.getWinner()}");
+  ui.notify(`Winner: ${game.getWinner().name}`);
   ui.notify("Game over!");
   ui.close();
 }

@@ -8,6 +8,8 @@ class Game {
     this.ui = ui;
     this.currentPlayer = players[0];
     this.otherPlayer = players[1];
+    this.players[0].opponent = players[1];
+    this.players[1].opponent = players[0];
     this.phase = "pregame"; // "pregame" | "main"
   }
 
@@ -54,85 +56,43 @@ class Game {
   }
 
   pregameIsOver(){
-    if (this.phase === "pregame" && this.players.every(p => p.hand.length <= 5)) return true;
+    if (this.phase === "pregame" && this.players.every(p => p.hand.cards.length <= 5)) return true;
   }
   switchPhase(){
     this.phase = "main";
     this.ui.notify("Pregame complete! Switching to main phase.");
   }
   drawIfNeeded(player){
-    if (player.hand.length < 5 && this.deck.count > 0) {
+    if (player.hand.cards.length < 5 && this.deck.count > 0) {
       player.draw(this.deck);
       this.ui.notify(`${player.name} draws a card.`);
     }
   }
 
   isOver(){
-    if (this.deck.count < 1) {
-      return true;
-    }
+    if (this.deck.count < 1) return true;
 
-    let flags = [0,0,0];
-    this.players.forEach((player, pi) => {
-      player.caravans.forEach((caravan, ci) => {
-        if (caravan.isSellable()) {
-          flags[ci] = 1;
-        }
-      });
-    });
-    return flags.every(value => value === 1);
+    return (this.getWinner() !== null);
   }
   getWinner() {
     let winners = [];
-    const player0 = this.players[0];
-    const player1 = this.players[1];
 
     for (let ci=0; ci<3; ci++){
-      winners.push(this.getCaravanWinner(ci));
+      const winner = this.getCaravanWinner(ci);
+      if (!winner) return null;
+      winners.push(winner);
     }
-  
-    const count0 = winners.filter(p => p === player0).length;
-    const count1 = winners.filter(p => p === player1).length;
 
-    if (count0 > count1) {
-      return player0;
-    }
-    if (count1 > count0) {
-      return player1;
-    }
+
+    if (winners.filter(p => p === this.players[0]).length >= 2) return this.players[0];
+    if (winners.filter(p => p === this.players[1]).length >= 2) return this.players[1];
 
     return null;
   }
 
-  getCaravanWinner(ci){
-    let result = null;
-    this.players.forEach((player, pi) => {
-      if (this.isInCompetition(ci)){
-        result = this.resolveCompetition(ci);
-      }
-      else if (player.caravans[ci].isSellable()) {
-        result = player;
-      }
-    });
-    return result;
-  }
-  isInCompetition(ci) {
-    return this.players.every(player => player.caravans[ci].isSellable());
-  }
-  resolveCompetition(ci) {
-    const player0 = this.players[0];
-    const player1 = this.players[1];
-    const caravan0 = player0.caravans[ci];
-    const caravan1 = player1.caravans[ci];
-
-    if (caravan0.getPoints() > caravan1.getPoints()){
-      return player0;
-    }
-    else if (caravan1.getPoints() > caravan0.getPoints()){
-      return player1;
-    }
-
-    return null;
+  getCaravanWinner(ci) {
+    const winner = this.players.find(player => player.caravanIsSelling(ci));
+    return winner || null;
   }
 
 }

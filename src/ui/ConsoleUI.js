@@ -16,22 +16,22 @@ class ConsoleUI {
 
   async askAction(player) {
     console.log(`${player.name}'s turn.`);
-    console.log("1) Place a number card in your field");
-    console.log("2) Attach a face card");
+    console.log("Hand:", player.hand.toString());
+    console.log("1) Place a card");
+    console.log("2) Discard one card from hand");
     console.log("3) Clear a caravan");
-    console.log("4) Discard one card from hand");
-    return await this.ask("Choose action: ");
+    const choice = await this.ask("Choose action: ");
+    if (!["1", "2", "3"].includes(choice)) return false;
+    
+    return choice;
   }
 
   printState(players, deck) { 
     console.log("\n=== GAME STATE ===");
     players.forEach((p) => {
       console.log(`\n${p.name}`);
-      console.log("Hand:", p.handToString());
-      console.log(`${p.name}'s caravans:`);
-      p.caravans.forEach((caravan, index) => {
-        console.log(`  Caravan ${index}: [${caravan.toString()}]`);
-      });
+      console.log(`Caravans:`);
+      console.log(p.caravansStr);
     });
     console.log(`\nDeck: ${deck.count} cards left`);
     console.log("==================\n");

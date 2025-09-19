@@ -1,12 +1,40 @@
 class Caravan {
   constructor() {
-    this.cards = [];
+    this._cards = [];
     this.direction = null;
     this.suit = null;
   }
+  get cardsStr() { 
+    return (this._cards || [])
+      .map((card, index) => `[${index}]${card ? card.toString() : ""}`)
+      .join(" ");
+  }
+  get dirStr() {
+    if (this.direction == "asc") return "↑";
+    if (this.direction == "desc") return "↓";
+    return " ";
+  }
+  get suitStr() {
+    if (!this.suit) return " ";
+    return this.suit;
+  }
+
+  get cards() {
+    return this._cards;
+  }
+
+  set cards(value) {
+    this._cards = value;
+    this.updateState();
+  }
+
+  updateState() {
+    this.setDirection();
+    this.setSuit();
+  }
 
   toString() {
-    return this.cards.map(card => {
+    return this._cards.map(card => {
       if (card.type === "numeric") {
         const attachments = card.attachments?.map(att => att.toString()).join(", ");
         return attachments ? `${card.toString()} [${attachments}]` : card.toString();
@@ -15,37 +43,35 @@ class Caravan {
     }).join(", ");
   }
 
-  setDirection(){
-    if (this.cards.length >= 2){
-      const lastCard = this.cards[this.cards.length-1];
-      const nextLastCard = this.cards[this.cards.length-2];
+  setDirection() {
+    if (this._cards.length >= 2) {
+      const lastCard = this._cards[this._cards.length - 1];
+      const nextLastCard = this._cards[this._cards.length - 2];
 
-      if (lastCard.points > nextLastCard.points){
+      if (lastCard.points > nextLastCard.points) {
         this.direction = "asc"; 
-      }
-      else if (lastCard.points < nextLastCard.points){
+      } else if (lastCard.points < nextLastCard.points) {
         this.direction = "desc"; 
       }
-    }
-    else{
+    } else {
       this.direction = null;
     }
   }
-  reverseDirection(){
-    if (this.direction == "asc") this.direction = "desc";
-    else if (this.direction == "desc") this.direction = "asc";
+
+  reverseDirection() {
+    if (this.direction === "asc") this.direction = "desc";
+    else if (this.direction === "desc") this.direction = "asc";
     return true;
   }
-  setSuit(suit){
+
+  setSuit(suit = null) {
     if (suit == null) {
-      if (this.cards.length > 0){
-        this.suit = this.cards[this.cards.length-1].suit;
-      }
-      else{
+      if (this._cards.length > 0) {
+        this.suit = this._cards[this._cards.length - 1].suit;
+      } else {
         this.suit = null;
       }
-    }
-    else {
+    } else {
       this.suit = suit;
     }
     return true;
@@ -53,70 +79,54 @@ class Caravan {
 
   addCard(card) {
     if (!card) return false;
-    this.cards.push(card);
-    this.setDirection();
-    this.setSuit();
+    this._cards.push(card);
+    this.updateState();
     return true;
   }
 
   removeCard(pickedCard) {
     if (!pickedCard) return false;
-    if (!this.cards.includes(pickedCard)) return false;
-    this.cards = this.cards.filter(card => card !== pickedCard);
-    this.setDirection();
-    this.setSuit();
+    if (!this._cards.includes(pickedCard)) return false;
+    this._cards = this._cards.filter(card => card !== pickedCard);
+    this.updateState();
     return true;
   }
 
   removeSuit(suit) {
     if (!suit) return false;
-    if (this.cards.length === 0) return true;
-
-    for (card of this.cards){
-      if (card.suit === suit){
-        this.removeCard(card);
-      }
-    }
+    this._cards = this._cards.filter(card => card.suit !== suit);
+    this.updateState();
     return true;
   }
+
   removeValue(value) {
     if (!value) return false;
-    if (this.cards.length === 0) return true;
-
-    for (card of this.cards){
-      if (card.value === value){
-        this.removeCard(card);
-      }
-    }
+    this._cards = this._cards.filter(card => card.value !== value);
+    this.updateState();
     return true;
   }
 
   clear() {
-    this.cards = [];
+    this._cards = [];
+    this.updateState();
     return true;
   }
 
   isEmpty() {
-    return this.cards.length === 0;
+    return this._cards.length === 0;
   }
 
   size() {
-    return this.cards.length;
+    return this._cards.length;
   }
 
-  getPoints() {
-    let result = null;    
-    for (const card of this.cards) {
-      result += card.points;
-    }
-    return result;
+  get points() {
+    return this._cards.reduce((sum, card) => sum + card.points, 0);
   }
-  
+
   isSellable() {
-    if (this.getPoints() >= 21 && this.getPoints() <= 26) {
-      return true;
-    }
-    return false;
+    const points = this.points;
+    return points >= 21 && points <= 26;
   }
 }
 

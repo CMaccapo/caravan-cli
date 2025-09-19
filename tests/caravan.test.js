@@ -1,5 +1,5 @@
-const Caravan = require("../models/Caravan");
-const Card = require("../models/Card");
+const Caravan = require("../src/models/Caravan");
+const Card = require("../src/models/Card");
 
 describe("Cards", () => {
     const cards = [

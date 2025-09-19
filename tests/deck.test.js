@@ -1,4 +1,4 @@
-const Deck = require("../models/Deck");
+const Deck = require("../src/models/Deck");
 
 describe("Deck - expected behavior", () => {
   test("deck starts with 54 cards", () => {
