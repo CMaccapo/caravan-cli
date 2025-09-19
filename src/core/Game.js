@@ -78,9 +78,12 @@ class Game {
     let winners = [];
 
     for (let ci=0; ci<3; ci++){
-      winners.push(this.getCaravanWinner(ci));
+      const winner = this.getCaravanWinner(ci);
+      if (!winner) return null;
+      winners.push(winner);
     }
-    
+
+
     if (winners.filter(p => p === this.players[0]).length >= 2) return this.players[0];
     if (winners.filter(p => p === this.players[1]).length >= 2) return this.players[1];
 

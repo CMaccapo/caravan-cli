@@ -35,13 +35,16 @@ describe("Game End", () => {
     game = new Game([p1, p2], deck, ui);
 
     p1.caravans[0].addCard(new Card("23", "♠", "numeric"));
-    p1.caravans[1].addCard(new Card("21", "♠", "numeric"));
-    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
+    p1.caravans[1].addCard(new Card("22", "♠", "numeric"));
+
   });
   test("Caravan win", () => {
+    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
     expect(game.getWinner()).toBe(p1);
   });
   test("Caravan win VS", () => {
+    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
+   
     p2.caravans[0].addCard(new Card("21", "♠", "numeric"));
     p2.caravans[1].addCard(new Card("21", "♠", "numeric"));
     p2.caravans[2].addCard(new Card("21", "♠", "numeric"));
@@ -49,15 +52,22 @@ describe("Game End", () => {
     expect(game.getWinner()).toBe(p1);
   });
   test("Tie no win", () => {
-    const deck = new Deck();
-    const p1 = new Player("P1", deck);
-    const p2 = new Player("P2", deck);
-    const ui = new SilentUI([]);
-    const game = new Game([p1, p2], deck, ui);
-
+    p1.caravans[2].addCard(new Card("26", "♠", "numeric"));
+    
     p2.caravans[0].addCard(new Card("23", "♠", "numeric"));
     p2.caravans[1].addCard(new Card("22", "♠", "numeric"));
     p2.caravans[2].addCard(new Card("26", "♠", "numeric"));
+
+    expect(game.getWinner()).toBe(null);
+    expect(game.isOver()).toBe(false);
+  });
+  test("2 selling no win", () => {
+
+    expect(game.getWinner()).toBe(null);
+    expect(game.isOver()).toBe(false);
+  });
+  test("Over selling no win", () => {
+    p1.caravans[2].addCard(new Card("27", "♠", "numeric"));
 
     expect(game.getWinner()).toBe(null);
     expect(game.isOver()).toBe(false);
