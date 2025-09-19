@@ -72,15 +72,7 @@ class Game {
   isOver(){
     if (this.deck.count < 1) return true;
 
-    let flags = [0,0,0];
-    this.players.forEach((player, pi) => {
-      player.caravans.forEach((caravan, ci) => {
-        if (caravan.isSellable()) {
-          flags[ci] = 1;
-        }
-      });
-    });
-    return flags.every(value => value === 1);
+    return (this.getWinner() !== null);
   }
   getWinner() {
     let winners = [];
@@ -88,11 +80,9 @@ class Game {
     for (let ci=0; ci<3; ci++){
       winners.push(this.getCaravanWinner(ci));
     }
-    const count0 = winners.filter(p => p === this.players[0]).length;
-    const count1 = winners.filter(p => p === this.players[1]).length;
-
-    if (count0 > count1) return this.players[0];
-    if (count1 > count0) return this.players[1];
+    
+    if (winners.filter(p => p === this.players[0]).length >= 2) return this.players[0];
+    if (winners.filter(p => p === this.players[1]).length >= 2) return this.players[1];
 
     return null;
   }
