@@ -16,10 +16,13 @@ class Game {
   async start() {
     while (!this.isOver()) {
       let valid = false;
+      let error = null;
+
       while (!valid) {
+        await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name, error);
         valid = await this.takeTurn();
         if (!valid) {
-          this.ui.notify("\nInvalid action. Please try again.");
+          error = ("\nInvalid action. Please try again.");
         }
       }
 
@@ -32,8 +35,6 @@ class Game {
   }
 
   async takeTurn() {
-    await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name);
-
     this.ui.clearScreen();
     this.ui.printState(this.players, this.deck);
 
