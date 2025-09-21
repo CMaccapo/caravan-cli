@@ -6,106 +6,114 @@ const Actions = {
   async execute(choice, game) {
     const player = game.currentPlayer;
     const opponent = game.otherPlayer;
-    const deck = game.deck;
     const phase = game.phase;
     const ui = game.ui;
-    let targetPlayer;
-    
+
+    let actionChoice;
+
     switch (choice) {
       case "1": {
-        let actionChoice = await promptActionChoice(
-          "place",
-          ui,
-          player,
-          opponent,
-          phase
-        );
-        if (actionChoice === false) return false;
-        if (actionChoice.type == "place"){
-          if (!RuleCheck.canPlace(actionChoice, phase)) return false;
-          return Placement.place(actionChoice);
-        }
-        if (actionChoice.type == "attach"){
-          return Placement.attach(actionChoice);
-        }
-      }
-      case "2": {
-        let handCardIndex = await chooseIndex(player.hand, "Hand", ui);
-        if (!player.hand.cards[handCardIndex]) return false;
-        
-        return Placement.discardHandCard(player, handCardIndex);
-      }
-      case "3": {
-        let caravanIndex = await chooseCaravan("discardCaravan", player, ui);
-        if (!player.caravans[caravanIndex]) return false;
+        const result = await promptActionChoice("place", ui, player, opponent, phase);
+        if (!result.success) return { success: false, error: result.error };
 
-        return Placement.discardCaravan(player, caravanIndex);
+        const actionChoice = result.actionChoice;
+
+        if (actionChoice.type === "place") {
+          if (!RuleCheck.canPlace(actionChoice, phase)) {
+            const msg = phase === "pregame"
+              ? "Invalid Placement: Must place on empty caravan in pregame"
+              : "Invalid Placement: Non-matching Suit or Direction";
+            return { success: false, error: msg };
+          }
+          Placement.place(actionChoice);
+          return { success: true };
+        }
+
+        if (actionChoice.type === "attach") {
+          if (!RuleCheck.canAttach(actionChoice, phase)) {
+            return { success: false, error: "Invalid attachment: Cannot attach this card here" };
+          }
+          Placement.attach(actionChoice);
+          return { success: true };
+        }
+        break;
+      }
+
+      case "2": {
+        const handCardIndex = await chooseIndex(player.hand, "Hand", ui);
+        if (!player.hand.cards[handCardIndex]) return { success: false, error: "Invalid hand card index" };
+        Placement.discardHandCard(player, handCardIndex);
+        return { success: true };
+      }
+
+      case "3": {
+        const caravanIndex = await chooseCaravan("discardCaravan", player, ui);
+        if (!player.caravans[caravanIndex]) return { success: false, error: "Invalid caravan index" };
+        Placement.discardCaravan(player, caravanIndex);
+        return { success: true };
       }
 
       default:
-        return false; // invalid choice
+        return { success: false, error: "Invalid action choice" };
     }
   }
 };
+
 async function promptActionChoice(actionType, ui, player, opponent, phase) {
-  let handCardIndex, caravanIndex, targetCardIndex;
-  let targetPlayer = player;
-  let fieldIndex = 0;
+  if (!player) return { success: false, error: "No player provided" };
 
-  if (!player) return false;
-
-  handCardIndex = await chooseIndex(player.hand, "Hand", ui);
-  if (!player.hand.cards[handCardIndex]) return false;
+  const handCardIndex = await chooseIndex(player.hand, "Hand", ui);
+  if (handCardIndex === false || !player.hand.cards[handCardIndex])
+    return { success: false, error: "Invalid hand card index" };
 
   actionType = setPlaceType(actionType, player.hand.cards[handCardIndex].type);
-  if ((actionType) === false) return false;
-  if (phase === "pregame" && actionType !== "place") return false
-  
-  fieldIndex = await chooseField(actionType, ui);
-  if (fieldIndex === false) return false;
-  
-  targetPlayer = pickTargetPlayer(actionType, fieldIndex, player, opponent);
-  if (!targetPlayer) return false;
-  
-  caravanIndex = await chooseCaravan(actionType, targetPlayer, ui);
-  if (!targetPlayer.caravans[caravanIndex]) return false;
-  
-  targetCardIndex = await chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui);
+  if (actionType === false) return { success: false, error: "Invalid card type" };
+  if (phase === "pregame" && actionType !== "place")
+    return { success: false, error: "Cannot attach in pregame" };
 
-  return new ActionChoice({
+  const fieldIndex = await chooseField(actionType, ui);
+  if (fieldIndex === false) return { success: false, error: "Invalid field selection" };
+
+  const targetPlayer = pickTargetPlayer(actionType, fieldIndex, player, opponent);
+  if (!targetPlayer) return { success: false, error: "Invalid target player" };
+
+  const caravanIndex = await chooseCaravan(actionType, targetPlayer, ui);
+  if (caravanIndex === false || !targetPlayer.caravans[caravanIndex])
+    return { success: false, error: "Invalid caravan selection" };
+
+  let targetCardIndex = null;
+  if (actionType === "attach") {
+    targetCardIndex = await chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui);
+    if (targetCardIndex === false || !targetPlayer.caravans[caravanIndex].cards[targetCardIndex])
+      return { success: false, error: "Invalid card selection for attachment" };
+  }
+
+  const actionChoice = new ActionChoice({
     type: actionType,
-    player: player,
-    opponent: opponent,
-    handCardIndex: handCardIndex,
-    targetPlayer: targetPlayer,
-    caravanIndex: caravanIndex,
-    targetCardIndex: targetCardIndex
+    player,
+    opponent,
+    handCardIndex,
+    targetPlayer,
+    caravanIndex,
+    targetCardIndex
   });
+
+  return { success: true, actionChoice };
 }
 
 
-async function chooseIndex(pickFrom, name, ui){
-  const handInput = await ui.ask(`
-    ${name}: ${pickFrom} 
-    Choose index from ${name}: `);
-
-  const index = parseInt(handInput, 10);
-  if (Number.isNaN(index) || index < 0 || index >= pickFrom.length) {
-    return false;
-  }
+async function chooseIndex(pickFrom, name, ui) {
+  const input = await ui.ask(`\n${name}: ${pickFrom}\nChoose index from ${name}: `);
+  const index = parseInt(input, 10);
+  if (Number.isNaN(index) || index < 0 || index >= pickFrom.length) return false;
   return index;
 }
 
-function pickTargetPlayer(actionType, fieldIndex, player, opponent){
-  if(actionType=="attach"){
-    switch(fieldIndex){
-      case 0: return player;
-      case 1: return opponent;
-    }
+function pickTargetPlayer(actionType, fieldIndex, player, opponent) {
+  if (actionType === "attach") {
+    return fieldIndex === 0 ? player : opponent;
   }
-  else if (actionType=="place") return player;
-  else if (actionType=="discardHand") return player;
-  else if (actionType=="discardCaravan") return player;
+  return player;
 }
 
 function setPlaceType(actionType, type){

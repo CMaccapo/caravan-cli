@@ -4,7 +4,8 @@ const Card = require("../src/models/Card");
 describe("Cards", () => {
     const cards = [
         new Card("A", "♠", "numeric"), 
-        new Card("6", "♦", "numeric")
+        new Card("6", "♦", "numeric"),
+        new Card("A", "♦", "numeric")
     ];
     let caravan;
     beforeEach(() => {
@@ -20,6 +21,14 @@ describe("Cards", () => {
             caravan.addCard(cards[1]);
             expect(caravan.suit).toBe("♦");
             expect(caravan.direction).toBe("asc");
+        });
+        test("Forcing sam val Sandwich returns null dir", () => {
+            caravan.addCard(cards[0]);
+            caravan.addCard(cards[1]);
+            caravan.addCard(cards[2]);
+            caravan.removeCard(cards[1]);
+            expect(caravan.suit).toBe("♦");
+            expect(caravan.direction).toBe(null);
         });
         test("Removing 2nd card changes suit and dir", () => {
             caravan.addCard(cards[0]);

@@ -44,18 +44,17 @@ class Caravan {
   }
 
   setDirection() {
-    if (this._cards.length >= 2) {
-      const lastCard = this._cards[this._cards.length - 1];
-      const nextLastCard = this._cards[this._cards.length - 2];
-
-      if (lastCard.points > nextLastCard.points) {
-        this.direction = "asc"; 
-      } else if (lastCard.points < nextLastCard.points) {
-        this.direction = "desc"; 
-      }
-    } else {
+    if (this._cards.length < 2) {
       this.direction = null;
+      return;
     }
+
+    const first = this._cards[0].points;
+    const last = this._cards[this._cards.length - 1].points;
+
+    if (first < last) this.direction = "asc";
+    else if (first > last) this.direction = "desc";
+    else this.direction = null;
   }
 
   reverseDirection() {

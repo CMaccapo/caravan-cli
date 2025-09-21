@@ -41,7 +41,7 @@ class ConsoleUI {
     this.clearScreen();
     this.printState(players, deck);
     if (errorMessage) this.notify(errorMessage);
-    await this.ask(`\n${name}, press ENTER to start your turn...`);
+    await this.ask(`${name}, press ENTER to start your turn...`);
   
   }
 

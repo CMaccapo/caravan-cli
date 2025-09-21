@@ -13,16 +13,40 @@ class Game {
     this.phase = "pregame"; // "pregame" | "main"
   }
 
+  async dealInitialHands(minNumeric = 3) {
+    let validHands = false;
+
+    while (!validHands) {
+      this.players.forEach(p => p.hand.cards = []);
+
+      this.deck.shuffle();
+
+      for (let i = 0; i < 8; i++) {
+        this.players.forEach(p => p.draw(this.deck));
+      }
+
+      validHands = this.players.every(p => 
+        p.hand.cards.filter(c => c.type === "numeric").length >= minNumeric
+      );
+    }
+  }
+
   async start() {
+    await this.dealInitialHands();
+
     while (!this.isOver()) {
       let valid = false;
       let error = null;
 
       while (!valid) {
         await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name, error);
-        valid = await this.takeTurn();
-        if (!valid) {
-          error = ("\nInvalid action. Please try again.");
+        const result = await this.takeTurn();
+        if (result.success) {
+        valid = true;
+        error = null;
+        } else {
+          valid = false;
+          error = result.error;
         }
       }
 
