@@ -7,12 +7,15 @@ const RuleCheck = {
     if (phase === "pregame") {
       if (!caravan.isEmpty()) return false;
     }
-
-    if(caravan.direction !== null){
-      const lastCard = caravan.cards[caravan.cards.length - 1];
+    let lastCard = null;
+    if (caravan.cards.length > 0){
+      lastCard = caravan.cards[caravan.cards.length - 1];
+    }
+    if(lastCard){
       if (card.suit === lastCard.suit) return true;
       if (caravan.direction === "asc" && card.points < lastCard.points) return false;
       if (caravan.direction === "desc" && card.points > lastCard.points) return false;
+      if (card.points === lastCard.points) return false;
     }
     return true;
   },

@@ -87,7 +87,8 @@ describe("Direction", () => {
       new Card("6", "♦", "numeric"),
       new Card("8", "♠", "numeric"), 
       new Card("2", "♥", "numeric"),
-      new Card("3", "♦", "numeric") 
+      new Card("3", "♦", "numeric"),
+      new Card("5", "♦", "numeric") 
     ];
 
     p1.caravans[caravanIndex].addCard(new Card("5", "♥", "numeric"));
@@ -106,6 +107,22 @@ describe("Direction", () => {
       expectSuccess: true,
       expectDirection: "asc",
       expectCount: 2,
+    },
+     {
+      name: "Add val to same val null",
+      startDirection: null,
+      cardIndex: 4,
+      expectSuccess: false,
+      expectDirection: null,
+      expectCount: 1,
+    },
+     {
+      name: "Add val to same val asc",
+      startDirection: "asc",
+      cardIndex: 4,
+      expectSuccess: false,
+      expectDirection: "asc",
+      expectCount: 1,
     },
     {
       name: "Same suit flips asc to desc",
