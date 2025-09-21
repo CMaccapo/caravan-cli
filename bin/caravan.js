@@ -15,6 +15,8 @@ async function main() {
     new Player("Player 2", deck),
   ];
 
+  ui.clearScreen();
+
   const game = new Game(players, deck, ui);
 
   await game.start();

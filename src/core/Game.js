@@ -15,7 +15,6 @@ class Game {
 
   async start(){
     while(!this.isOver()){
-      this.ui.printState(this.players, this.deck);
       if (!await this.takeTurn()) {
         await this.takeTurn();
         this.ui.notify("\nInvalid action. Please try again.");
@@ -29,6 +28,8 @@ class Game {
   }
 
   async takeTurn() {
+    await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name);
+
     if (this.phase === "pregame") {
       this.ui.notify(`${this.currentPlayer.name}'s pregame turn.`);
       return await Actions.execute("1",this);
