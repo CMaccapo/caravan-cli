@@ -34,6 +34,9 @@ class Game {
   async takeTurn() {
     await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name);
 
+    this.ui.clearScreen();
+    this.ui.printState(this.players, this.deck);
+
     if (this.phase === "pregame") {
       this.ui.notify(`${this.currentPlayer.name}'s pregame turn.`);
       return await Actions.execute("1",this);

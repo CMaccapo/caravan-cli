@@ -125,7 +125,7 @@ function setPlaceType(actionType, type){
 
 async function chooseField(actionType, ui){
   if (actionType.includes("attach")) {
-    return await chooseIndex(["Yourself[0]", "Opponent[1]"], "Field", ui);
+    return await chooseIndex(["[0]Self", " [1]Opponent"], "Field", ui);
   }
 }
 
