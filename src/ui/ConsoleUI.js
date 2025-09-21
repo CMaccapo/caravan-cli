@@ -37,7 +37,6 @@ class ConsoleUI {
     console.log("==================\n");
   }
 
-
   notify(message) {
     console.log(message);
   }

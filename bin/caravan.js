@@ -17,9 +17,8 @@ async function main() {
 
   const game = new Game(players, deck, ui);
 
-  while (!game.isOver()) {
-    await game.takeTurn();
-  }
+  await game.start();
+  
   ui.notify(`Winner: ${game.getWinner().name}`);
   ui.notify("Game over!");
   ui.close();

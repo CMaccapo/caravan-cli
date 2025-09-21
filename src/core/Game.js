@@ -13,41 +13,29 @@ class Game {
     this.phase = "pregame"; // "pregame" | "main"
   }
 
-  async takeTurn(maxAttempts = 10) {
-    const player = this.currentPlayer;
-    const opponent = this.otherPlayer;
-
-    this.ui.currentPlayer = player;
-    this.ui.currentOpponent = opponent;
-    this.ui.printState(this.players, this.deck);
-
-    let success = false;
-    let attempts = 0;
-
-    while (!success) {
-      attempts++;
-      if (attempts > maxAttempts) {
-        throw new Error(`[Game.takeTurn] exceeded ${maxAttempts} attempts (likely bad UI inputs)`);
-      }
-
-      if (this.phase === "pregame") {
-        this.ui.notify(`${player.name}'s pregame turn.`);
-        success = await Actions.execute("1",this);
-      } else {
-        const choice = await this.ui.askAction(player);
-        success = await Actions.execute(choice, this);
-      }
-
-      if (!success) {
+  async start(){
+    while(!this.isOver()){
+      this.ui.printState(this.players, this.deck);
+      if (!await this.takeTurn()) {
+        await this.takeTurn();
         this.ui.notify("\nInvalid action. Please try again.");
+      };
+      this.drawIfNeeded(this.currentPlayer);
+      if (this.pregameIsOver()) {
+        this.switchPhase();
       }
+      this.switchPlayers();
     }
+  }
 
-    this.drawIfNeeded(player);
-    if (this.pregameIsOver()) {
-      this.switchPhase();
+  async takeTurn() {
+    if (this.phase === "pregame") {
+      this.ui.notify(`${this.currentPlayer.name}'s pregame turn.`);
+      return await Actions.execute("1",this);
+    } else {
+      const choice = await this.ui.askAction(this.currentPlayer);
+      return await Actions.execute(choice, this);
     }
-    this.switchPlayers();
   }
 
   switchPlayers(){ 
@@ -58,10 +46,12 @@ class Game {
   pregameIsOver(){
     if (this.phase === "pregame" && this.players.every(p => p.hand.cards.length <= 5)) return true;
   }
+
   switchPhase(){
     this.phase = "main";
     this.ui.notify("Pregame complete! Switching to main phase.");
   }
+
   drawIfNeeded(player){
     if (player.hand.cards.length < 5 && this.deck.count > 0) {
       player.draw(this.deck);
@@ -74,6 +64,7 @@ class Game {
 
     return (this.getWinner() !== null);
   }
+
   getWinner() {
     let winners = [];
 
