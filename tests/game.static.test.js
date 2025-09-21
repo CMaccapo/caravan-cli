@@ -137,9 +137,9 @@ describe("Direction", () => {
     p1.caravans[caravanIndex].direction = startDirection;
 
     ui.pushInputs([cardIndex.toString(), caravanIndex.toString()]);
-    const success = await Actions.execute("1", game);
+    const result = await Actions.execute("1", game);
 
-    expect(success).toBe(expectSuccess);
+    expect(result.success).toBe(expectSuccess);
     expect(p1.caravans[caravanIndex].cards.length).toBe(expectCount);
     expect(p1.caravans[caravanIndex].direction).toBe(expectDirection);
   });
@@ -258,8 +258,8 @@ describe("Card Attachments", () => {
     test.each(cases)("$name", async ({ playIndex, fieldIndex, baseIndex, setup, verify }) => {
       setup(p1, p2);
       ui.pushInputs([playIndex, fieldIndex, caravanIndex, baseIndex]);
-      const success = await Actions.execute("1", game);
-      expect(success).toBe(true);
+      const result = await Actions.execute("1", game);
+      expect(result.success).toBe(true);
       verify(p1, p2, caravanIndex, baseIndex);
     });
   });
@@ -341,8 +341,8 @@ describe("Card Attachments", () => {
 
     test.each(cases)("$name", async ({ inputs, expectSuccess, verify, choice = "1" }) => {
       ui.pushInputs(inputs.map(String));
-      const success = await Actions.execute(choice, game);
-      expect(success).toBe(expectSuccess);
+      const result = await Actions.execute(choice, game);
+      expect(result.success).toBe(expectSuccess);
       verify(p1, caravanIndex, 0);
     });
   });

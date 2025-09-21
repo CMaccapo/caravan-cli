@@ -20,9 +20,13 @@ class Game {
 
       while (!valid) {
         await this.ui.waitForTurn(this.players, this.deck, this.currentPlayer.name, error);
-        valid = await this.takeTurn();
-        if (!valid) {
-          error = ("\nInvalid action. Please try again.");
+        const result = await this.takeTurn();
+        if (result.success) {
+        valid = true;
+        error = null;
+        } else {
+          valid = false;
+          error = result.error;
         }
       }
 
