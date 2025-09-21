@@ -13,8 +13,10 @@ const Actions = {
 
     switch (choice) {
       case "1": {
-        actionChoice = await promptActionChoice("place", ui, player, opponent, phase);
-        if (!actionChoice) return { success: false, error: "Invalid Selection" };
+        const result = await promptActionChoice("place", ui, player, opponent, phase);
+        if (!result.success) return { success: false, error: result.error };
+
+        const actionChoice = result.actionChoice;
 
         if (actionChoice.type === "place") {
           if (!RuleCheck.canPlace(actionChoice, phase)) {
@@ -58,37 +60,47 @@ const Actions = {
 };
 
 async function promptActionChoice(actionType, ui, player, opponent, phase) {
-  if (!player) return false;
+  if (!player) return { success: false, error: "No player provided" };
 
   const handCardIndex = await chooseIndex(player.hand, "Hand", ui);
-  if (handCardIndex === false || !player.hand.cards[handCardIndex]) return false;
+  if (handCardIndex === false || !player.hand.cards[handCardIndex])
+    return { success: false, error: "Invalid hand card index" };
 
   actionType = setPlaceType(actionType, player.hand.cards[handCardIndex].type);
-  if (actionType === false) return false;
-  if (phase === "pregame" && actionType !== "place") return false;
+  if (actionType === false) return { success: false, error: "Invalid card type" };
+  if (phase === "pregame" && actionType !== "place")
+    return { success: false, error: "Cannot attach in pregame" };
 
   const fieldIndex = await chooseField(actionType, ui);
-  if (fieldIndex === false) return false;
+  if (fieldIndex === false) return { success: false, error: "Invalid field selection" };
 
   const targetPlayer = pickTargetPlayer(actionType, fieldIndex, player, opponent);
-  if (!targetPlayer) return false;
+  if (!targetPlayer) return { success: false, error: "Invalid target player" };
 
   const caravanIndex = await chooseCaravan(actionType, targetPlayer, ui);
-  if (caravanIndex === false || !targetPlayer.caravans[caravanIndex]) return false;
+  if (caravanIndex === false || !targetPlayer.caravans[caravanIndex])
+    return { success: false, error: "Invalid caravan selection" };
 
-  const targetCardIndex = await chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui);
-  if (actionType === "attach" && (targetCardIndex === false || !targetPlayer.caravans[caravanIndex].cards[targetCardIndex])) return false;
+  let targetCardIndex = null;
+  if (actionType === "attach") {
+    targetCardIndex = await chooseTargetCard(actionType, player, targetPlayer, handCardIndex, caravanIndex, ui);
+    if (targetCardIndex === false || !targetPlayer.caravans[caravanIndex].cards[targetCardIndex])
+      return { success: false, error: "Invalid card selection for attachment" };
+  }
 
-  return new ActionChoice({
+  const actionChoice = new ActionChoice({
     type: actionType,
-    player: player,
-    opponent: opponent,
-    handCardIndex: handCardIndex,
-    targetPlayer: targetPlayer,
-    caravanIndex: caravanIndex,
-    targetCardIndex: targetCardIndex
+    player,
+    opponent,
+    handCardIndex,
+    targetPlayer,
+    caravanIndex,
+    targetCardIndex
   });
+
+  return { success: true, actionChoice };
 }
+
 
 async function chooseIndex(pickFrom, name, ui) {
   const input = await ui.ask(`\n${name}: ${pickFrom}\nChoose index from ${name}: `);
