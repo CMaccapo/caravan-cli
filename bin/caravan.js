@@ -15,11 +15,12 @@ async function main() {
     new Player("Player 2", deck),
   ];
 
+  ui.clearScreen();
+
   const game = new Game(players, deck, ui);
 
-  while (!game.isOver()) {
-    await game.takeTurn();
-  }
+  await game.start();
+  
   ui.notify(`Winner: ${game.getWinner().name}`);
   ui.notify("Game over!");
   ui.close();

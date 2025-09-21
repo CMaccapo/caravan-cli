@@ -37,6 +37,26 @@ class ConsoleUI {
     console.log("==================\n");
   }
 
+  async waitForTurn(players, deck, name, errorMessage = null) {
+    this.clearScreen();
+    this.printState(players, deck);
+    if (errorMessage) this.notify(errorMessage);
+    await this.ask(`\n${name}, press ENTER to start your turn...`);
+  
+  }
+
+  clearScreen() {
+    if (process.platform === "win32") {
+      try {
+        execSync("cls", { stdio: "inherit" });
+      } catch {
+        console.clear(); 
+      }
+    } else {
+      process.stdout.write("\x1B[2J\x1B[3J\x1B[H");
+    }
+  }
+
 
   notify(message) {
     console.log(message);
