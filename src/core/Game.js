@@ -13,12 +13,16 @@ class Game {
     this.phase = "pregame"; // "pregame" | "main"
   }
 
-  async start(){
-    while(!this.isOver()){
-      if (!await this.takeTurn()) {
-        await this.takeTurn();
-        this.ui.notify("\nInvalid action. Please try again.");
-      };
+  async start() {
+    while (!this.isOver()) {
+      let valid = false;
+      while (!valid) {
+        valid = await this.takeTurn();
+        if (!valid) {
+          this.ui.notify("\nInvalid action. Please try again.");
+        }
+      }
+
       this.drawIfNeeded(this.currentPlayer);
       if (this.pregameIsOver()) {
         this.switchPhase();
