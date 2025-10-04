@@ -1,9 +1,4 @@
-const Card = require("../src/models/Card");
-const Deck = require("../src/models/Deck");
-const Player = require("../src/models/Player");
-const Game = require("../src/core/Game");
-const RuleCheck = require("../src/core/RuleCheck");
-const Actions = require("../src/core/Actions");
+const { Card, Deck, Player, Game, RuleCheck, Actions } = require("caravan-core");
 
 class SilentUI {
   constructor(inputs = []) {

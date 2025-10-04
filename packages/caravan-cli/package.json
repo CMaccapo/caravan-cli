@@ -1,0 +1,31 @@
+{
+  "name": "caravan-cli",
+  "version": "1.0.0",
+  "files": [
+    "bin/",
+    "src/"
+  ],
+  "bin": {
+    "caravan": "./bin/caravan.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "start": "node bin/caravan.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "card game",
+    "caravan",
+    "CLI",
+    "nodejs"
+  ],
+  "author": "CMaccapo",
+  "license": "ISC",
+  "description": "A command-line card game based on Caravan, playable in Node.js",
+  "dependencies": {
+    "caravan-core": "*"
+  },
+  "devDependencies": {
+    "jest": "^30.1.3"
+  }
+}

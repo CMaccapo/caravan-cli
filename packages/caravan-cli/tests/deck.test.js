@@ -1,7 +1,4 @@
-const Game = require("../src/core/Game");
-const Deck = require("../src/models/Deck");
-const Player = require("../src/models/Player");
-const Card = require("../src/models/Card");
+const { Card, Deck, Player, Game } = require("caravan-core");
 
 describe("Initial hand reshuffle for all-face card hands", () => {
   it("should reshuffle if players have fewer than 3 numeric cards", async () => {

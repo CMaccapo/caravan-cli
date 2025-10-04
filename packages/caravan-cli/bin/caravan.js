@@ -1,9 +1,5 @@
 #!/usr/bin/env node
-const Card = require("../src/models/Card");
-const Deck = require("../src/models/Deck");
-const Player = require("../src/models/Player");
-
-const Game = require("../src/core/Game");
+const { Card, Deck, Player, Game } = require("caravan-core");
 const ConsoleUI = require("../src/ui/ConsoleUI");
 
 async function main() {

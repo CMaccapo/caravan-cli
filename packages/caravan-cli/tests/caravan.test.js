@@ -1,5 +1,4 @@
-const Caravan = require("../src/models/Caravan");
-const Card = require("../src/models/Card");
+const { Card, Caravan } = require("caravan-core");
 
 describe("Cards", () => {
     const cards = [
